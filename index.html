@@ -134,6 +134,13 @@ footer.site .inner{padding-top:38px;padding-bottom:38px}
 footer.site p{margin:0 0 10px;font-size:.85rem;color:#D7DEEE;max-width:70ch}
 footer.site a{color:#fff}
 footer.site .copy{border-top:1px solid #ffffff2e;margin-top:22px;padding-top:16px;font-size:.78rem;color:#B9C4DC}
+/* same +/− collapsible pattern as .notes details, restyled for the dark footer */
+footer.site details.ai-disclosure summary{cursor:pointer;list-style:none;font-size:.85rem;font-weight:600;color:#fff}
+footer.site details.ai-disclosure summary::-webkit-details-marker{display:none}
+footer.site details.ai-disclosure summary::before{content:"+ ";font-family:var(--mono);font-size:.75em;vertical-align:.1em;color:#D7DEEE}
+footer.site details.ai-disclosure[open] summary::before{content:"\2212 "}
+footer.site details.ai-disclosure summary:focus-visible{outline:2px solid #fff;outline-offset:3px}
+footer.site details.ai-disclosure p{margin:10px 0 0}
 
 </style>
 <style>
@@ -210,6 +217,14 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .study-table .sval{display:block}
 .study-table .smeasure{display:block;margin-top:3px;font-family:var(--sans);font-size:11px;font-weight:400;letter-spacing:0;color:var(--gray-text)}
 .study-table .toggle-row{background:var(--pale)}
+/* the Article column adds width, so the table scrolls inside its own box
+   rather than pushing the page sideways on narrow screens */
+.study-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.study-table td.link-cell{width:1%;white-space:nowrap}
+.study-table .slink{font-family:var(--mono);font-size:.76rem;font-weight:500;color:var(--blue);text-decoration:none;white-space:nowrap}
+.study-table .slink:hover{text-decoration:underline}
+.study-table .slink:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.study-table .nolink{font-family:var(--mono);font-size:.76rem;color:var(--gray-text);opacity:.5}
 
 .usedby-list{display:flex;flex-wrap:wrap;gap:4px}
 .usedby{display:inline-block;padding:3px 9px;border-radius:999px;font-family:var(--mono);font-size:.72rem;font-weight:600;white-space:nowrap}
@@ -332,6 +347,183 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .detail .dlink{display:inline-block;margin-top:28px;font-weight:700;font-size:.85rem;color:var(--blue);text-decoration:none}
 .detail .dlink:hover{text-decoration:underline}
 .detail .dlink:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- baseline + increment equation strip ---------- */
+/* Reads as a continuation of the number line, not a separate component: the
+   terms borrow the marker pill's fill, radius and padding, and the operators
+   borrow the axis label's mono weight. The top margin matches the gap the
+   axis already leaves before the below-the-line pill row (.rowzone.below). */
+/* --lane/--lane-tint are set on the strip by updateEquation() from the same
+   LANES entry the number line uses, so the equation carries the active
+   metric's colour rather than a fixed navy. Defaults here cover the moment
+   before any tab is picked. */
+.eq-strip{
+  --lane:var(--navy);--lane-tint:var(--pale);
+  display:flex;flex-wrap:nowrap;align-items:stretch;justify-content:center;
+  gap:clamp(8px,1.6vw,16px);
+  margin-top:40px;padding-top:22px;border-top:1px solid var(--gray-line);
+}
+.eq-strip[hidden]{display:none}
+.eq-term{
+  flex:0 1 auto;min-width:0;
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:7px 12px;border-radius:4px;border:1px solid transparent;
+  background:var(--lane-tint);text-align:center;
+}
+.eq-label{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;line-height:1.35;
+  text-transform:uppercase;color:var(--gray-text);
+}
+.eq-value{
+  font-family:var(--mono);font-size:.95rem;font-weight:600;color:var(--lane);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.eq-op{
+  align-self:center;font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--lane);
+}
+/* the result term is the one filled figure on the strip — same fill as the
+   selected marker on the line above it */
+.eq-total{background:var(--lane)}
+.eq-total .eq-label{color:#fff;opacity:.72}
+.eq-total .eq-value{color:#fff}
+/* empty state: outlined rather than filled, so nothing reads as a value yet */
+.eq-selected.is-empty{background:transparent;border:1px dashed var(--lane);opacity:.7}
+.eq-selected.is-empty .eq-label,.eq-selected.is-empty .eq-value{color:var(--gray-text);opacity:.75}
+.eq-note{margin:12px auto 0;max-width:70ch;font-size:.78rem;line-height:1.5;color:var(--gray-text);text-align:center}
+.eq-note[hidden]{display:none}
+@media(prefers-reduced-motion:no-preference){.eq-value{transition:opacity .12s ease}}
+@media(max-width:720px){
+  .eq-strip{flex-direction:column;align-items:stretch;gap:6px}
+  .eq-op{align-self:center;transform:rotate(90deg)}
+}
+
+/* ---------- submit-an-estimate form ---------- */
+.submitform{margin-top:22px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px clamp(16px,2.4vw,24px)}
+@media(max-width:720px){.formgrid{grid-template-columns:1fr}}
+.formfield{margin:0;display:flex;flex-direction:column;gap:6px}
+.formfield-wide{grid-column:1/-1}
+.formfield label{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy)}
+.formfield .req,.formfield .opt{margin-left:.5em;font-weight:400;letter-spacing:.08em}
+.formfield .req{color:var(--maroon)}
+.formfield .opt{color:var(--gray-text);opacity:.7}
+.submitform input.control{width:100%}
+/* the shared .control rule covers input/select only — textarea repeats it */
+.submitform textarea.control{
+  width:100%;font-family:var(--mono);font-size:.95rem;padding:9px 10px;
+  border:1px solid var(--navy);background:var(--white);color:var(--near-black);
+  border-radius:0;line-height:1.5;resize:vertical;
+}
+.submitform textarea.control:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.submitform ::placeholder{color:var(--gray-text);opacity:.55}
+.formfoot{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin-top:20px}
+.submitbtn{
+  padding:12px 26px;border:1.5px solid var(--navy);border-radius:999px;
+  background:var(--navy);color:#fff;font-family:var(--sans);font-weight:700;font-size:.92rem;
+  cursor:pointer;transition:background .15s ease,border-color .15s ease,opacity .15s ease;
+}
+.submitbtn:hover:not(:disabled){background:var(--blue);border-color:var(--blue)}
+.submitbtn:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.submitbtn:disabled{opacity:.55;cursor:default}
+.submitstatus{font-size:.86rem;color:var(--gray-text)}
+.submitstatus.is-success{color:var(--sage-dark);font-weight:600}
+.submitstatus.is-error{color:var(--maroon)}
+.submitstatus a{color:inherit}
+
+/* ---------- "Other considerations" tiles ---------- */
+/* The original bullet lists stay in the markup, hidden, so this whole panel
+   can be reverted by deleting the one rule below and the #considerPanel div. */
+.notes .notes-sub,.notes .check-list{display:none}
+
+/* the section title above is mono at the same scale as the group labels, so
+   the panel needs its own breathing room or the two run together */
+.consider-panel{margin-top:24px}
+.consider-group+.consider-group{margin-top:40px;padding-top:34px;border-top:1px solid var(--gray-line)}
+.consider-label{margin:0;font-weight:800;font-size:1.15rem;letter-spacing:-.015em;color:var(--navy)}
+.consider-sub{margin:.45em 0 0;max-width:65ch;font-size:.86rem;font-style:italic;line-height:1.55;color:var(--gray-text)}
+.consider-unit{margin:22px 0 10px;font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-text)}
+
+/* Both groups now render 4 tiles (anchor + 3), so one column count covers
+   both — the parameter group's former 5-column override is gone along with
+   its "Labor share" tile. */
+.tile-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+@media(max-width:860px){
+  .tile-row{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){
+  .tile-row{grid-template-columns:1fr}
+}
+.tile-cell{position:relative;display:flex}
+.tile{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:9px;
+  padding:20px 10px 18px;border:1px solid var(--gray-line);border-radius:4px;
+  background:transparent;font-family:var(--sans);text-align:center;cursor:pointer;
+  transition:background .12s ease,border-color .12s ease;
+}
+.consider-group[data-kind="parameter"] .tile{border-style:dashed}
+.tile.is-anchor{background:var(--pale);border-style:solid}
+.tile:not(.is-static):hover{border-color:var(--navy);background:var(--pale)}
+.tile:not(.is-static):focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.tile.is-active{background:var(--navy);border-color:var(--navy)}
+/* the anchor/median tile is the fixed reference point, not an option to pick —
+   default cursor and no hover/active feedback mark it as inert */
+.tile.is-static{cursor:default}
+.tile-anchor-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.tile-caption{font-family:var(--mono);font-size:.57rem;letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
+.tile-value{
+  font-family:var(--mono);font-size:clamp(1.55rem,3.5vw,2.5rem);font-weight:600;line-height:1;
+  letter-spacing:-.03em;color:var(--navy);font-variant-numeric:tabular-nums;
+}
+/* parameter tiles show inputs, not results — one size step down */
+.consider-group[data-kind="parameter"] .tile-value{font-size:clamp(1.15rem,2.5vw,1.85rem)}
+.tile-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;line-height:1.45;color:var(--gray-text)}
+.tile.is-active .tile-caption,.tile.is-active .tile-value{color:#fff}
+.tile.is-active .tile-tag{color:#fff;opacity:.78}
+
+/* nested <button> is invalid HTML, so the footnote marker is a sibling of the
+   tile pinned to its corner rather than an inline child after the value */
+.fn-marker{
+  position:absolute;top:7px;right:7px;z-index:1;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:17px;height:17px;padding:0;border:1px solid var(--navy);border-radius:50%;
+  background:var(--pale);color:var(--navy);
+  font-family:var(--mono);font-size:.62rem;font-weight:600;line-height:1;cursor:pointer;
+}
+.fn-marker:hover{background:var(--navy);color:#fff}
+.fn-marker:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.fn-panel{margin:16px 0 0;max-width:65ch;font-size:.83rem;font-style:italic;line-height:1.55;color:var(--gray-text)}
+.fn-panel[hidden]{display:none}
+
+.tile-detail{max-width:70ch;min-height:0;opacity:0;transition:opacity .18s ease}
+.tile-detail.is-filled{margin-top:26px;padding-top:22px;min-height:7.5em;opacity:1}
+.shift-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin:0 0 18px;padding-bottom:16px}
+.shift-from,.shift-arrow{font-family:var(--mono);font-size:1.5rem;color:var(--gray-text)}
+.shift-to{font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums}
+.to-low,.to-high{font-size:1em;font-weight:600}
+.to-sep{margin:0 .1em;color:var(--gray-text);opacity:.45;font-weight:400}
+.shift-delta{font-family:var(--mono);font-size:.76rem;font-weight:600;padding:4px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
+/* directional, not good or bad — both tints stay pale */
+.shift-delta.is-up{background:#E7EDE2;color:var(--sage-dark)}
+.shift-delta.is-down{background:#F5E1E2;color:var(--maroon)}
+.shift-delta+.shift-delta{margin-left:-6px}
+.shift-caption{margin:0;max-width:65ch;font-size:.83rem;font-style:italic;line-height:1.55;color:var(--gray-text)}
+.tile-body{margin:14px 0 0;max-width:70ch;font-size:.93rem;line-height:1.6;color:var(--gray-text)}
+.shift-caption+.tile-body{margin-top:12px}
+
+/* The section heading drops the display face for the eyebrow treatment, so the
+   panel reads as apparatus behind the argument rather than a new argument.
+   Selector carries an element so it outranks `.block h3.sec`. */
+.block h3.apparatus-title{
+  margin:0;padding-top:0;border-top:0;
+  font-family:var(--mono);font-size:1.15rem;font-weight:400;letter-spacing:.1em;
+  line-height:1.3;text-transform:uppercase;color:var(--gray-text);
+}
+.consider-label.group-label{
+  margin:0;border:0;
+  font-family:var(--mono);font-size:.68rem;font-weight:400;letter-spacing:.1em;
+  line-height:1.3;text-transform:uppercase;color:var(--navy);
+}
+.consider-head+.tile-row{margin-top:12px}
 </style>
 </head>
 <body>
@@ -484,7 +676,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
           <input type="number" class="num" id="n-savings" min="0" max="100" step="0.1" value="27" aria-label="Average labor cost savings, percent, exact value">
         </div>
         <details class="prov">
-          <summary>Where does this number come from? Nine studies</summary>
+          <summary>Where does this number come from?</summary>
+          <div class="study-scroll">
           <table class="study-table">
             <thead>
               <tr>
@@ -492,6 +685,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
                 <th scope="col">Study</th>
                 <th scope="col" class="n">Value</th>
                 <th scope="col">Used by</th>
+                <th scope="col">Article</th>
               </tr>
             </thead>
             <tbody>
@@ -500,6 +694,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
                 <td><p class="sname">Noy and Zhang (2023)</p><p class="sdomain">Writing tasks assisted with Chat GPT</p></td>
                 <td class="n"><span class="sval">40%</span><span class="smeasure">speed</span></td>
                 <td><span class="usedby-list"><span class="usedby acemoglu">Acemoglu</span><span class="usedby aghion" title="Aghion &amp; Bunel (2024)">A&amp;B</span><span class="usedby pwbm" title="Penn Wharton Budget Model">PWBM</span></span></td>
+                <td class="link-cell"><a class="slink" href="https://www.science.org/doi/10.1126/science.adh2586" target="_blank" rel="noopener noreferrer">Link →</a></td>
               </tr>
               <tr class="toggle-row">
                 <td class="check-cell"><input type="checkbox" id="study-bryn" checked><label for="study-bryn" class="sr-only">Include Brynjolfsson et al. (2023) in the average</label></td>
@@ -507,73 +702,63 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
                   <p class="sname">Brynjolfsson et al. (2023)</p>
                   <p class="sdomain">Customer support agents assisted with generative AI tool</p>
                   <div class="bryntoggle">
-                    <button type="button" class="btoggle active" data-study="bryn" data-value="14" data-measure="task completion rate" aria-pressed="true">14% headline</button>
-                    <button type="button" class="btoggle" data-study="bryn" data-value="25" data-measure="task completion rate" aria-pressed="false">25% three months post-deployment</button>
+                    <button type="button" class="btoggle active" data-study="bryn" data-value="14" data-measure="Issue resolution rate" aria-pressed="true">14% headline</button>
+                    <button type="button" class="btoggle" data-study="bryn" data-value="25" data-measure="Issue resolution rate" aria-pressed="false">25% three months post-deployment</button>
                   </div>
                 </td>
-                <td class="n"><span class="sval" id="bryn-sval">14%</span><span class="smeasure" id="bryn-smeasure">task completion rate</span></td>
+                <td class="n"><span class="sval" id="bryn-sval">14%</span><span class="smeasure" id="bryn-smeasure">Issue resolution rate</span></td>
                 <td><span class="usedby-list"><span class="usedby acemoglu">Acemoglu</span><span class="usedby aghion" title="Aghion &amp; Bunel (2024)">A&amp;B</span><span class="usedby pwbm" title="Penn Wharton Budget Model">PWBM</span><span class="usedby oecd" title="OECD (Filippucci, Gal &amp; Schief)">OECD</span></span></td>
+                <td class="link-cell"><a class="slink" href="https://www.nber.org/papers/w31161" target="_blank" rel="noopener noreferrer">Link →</a></td>
               </tr>
               <tr>
                 <td class="check-cell"><input type="checkbox" id="study-peng"><label for="study-peng" class="sr-only">Include Peng et al. (2023) in the average</label></td>
                 <td><p class="sname">Peng et al. (2023)</p><p class="sdomain">Software developers implementing HTTP servers assisted with AI pair programmer</p></td>
                 <td class="n"><span class="sval">56%</span><span class="smeasure">speed</span></td>
                 <td><span class="usedby-list"><span class="usedby aghion" title="Aghion &amp; Bunel (2024)">A&amp;B</span><span class="usedby pwbm" title="Penn Wharton Budget Model">PWBM</span></span></td>
+                <td class="link-cell"><a class="slink" href="https://www.researchgate.net/publication/368473822_The_Impact_of_AI_on_Developer_Productivity_Evidence_from_GitHub_Copilot" target="_blank" rel="noopener noreferrer">Link →</a></td>
               </tr>
               <tr>
                 <td class="check-cell"><input type="checkbox" id="study-cui"><label for="study-cui" class="sr-only">Include Cui et al. (2025) in the average</label></td>
                 <td><p class="sname">Cui et al. (2025)</p><p class="sdomain">Software developers using AI-based coding assistant</p></td>
-                <td class="n"><span class="sval">26%</span><span class="smeasure">task completion rate</span></td>
+                <td class="n"><span class="sval">26%</span><span class="smeasure">Task completion rate</span></td>
                 <td><span class="usedby-list"><span class="usedby pwbm" title="Penn Wharton Budget Model">PWBM</span></span></td>
+                <td class="link-cell"><a class="slink" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4945566" target="_blank" rel="noopener noreferrer">Link →</a></td>
               </tr>
               <tr class="toggle-row">
                 <td class="check-cell"><input type="checkbox" id="study-dellacqua"><label for="study-dellacqua" class="sr-only">Include Dell'Acqua et al. (2023) in the average</label></td>
                 <td>
                   <p class="sname">Dell'Acqua et al. (2023)</p>
-                  <p class="sdomain">Consulting, GPT-4</p>
+                  <p class="sdomain">Consultants using GPT-4 to complete tasks</p>
                   <div class="bryntoggle">
-                    <button type="button" class="btoggle active" data-study="dellacqua" data-value="12" data-measure="completion rate" aria-pressed="true">12% completion rate</button>
-                    <button type="button" class="btoggle" data-study="dellacqua" data-value="25" data-measure="speed" aria-pressed="false">25% speed</button>
+                    <button type="button" class="btoggle active" data-study="dellacqua" data-value="12" data-measure="Task completion rate" aria-pressed="true">12% more tasks completed</button>
+                    <button type="button" class="btoggle" data-study="dellacqua" data-value="25" data-measure="speed" aria-pressed="false">25% quicker completion</button>
                   </div>
-                  <p class="bryntext">The study reports both. PWBM take the completion rate.</p>
                 </td>
-                <td class="n"><span class="sval" id="dellacqua-sval">12%</span><span class="smeasure" id="dellacqua-smeasure">completion rate</span></td>
+                <td class="n"><span class="sval" id="dellacqua-sval">12%</span><span class="smeasure" id="dellacqua-smeasure">Task completion rate</span></td>
                 <td><span class="usedby-list"><span class="usedby pwbm" title="Penn Wharton Budget Model">PWBM</span><span class="usedby oecd" title="OECD (Filippucci, Gal &amp; Schief)">OECD</span></span></td>
+                <td class="link-cell"><a class="slink" href="https://www.hbs.edu/faculty/Pages/item.aspx?num=64700" target="_blank" rel="noopener noreferrer">Link →</a></td>
               </tr>
               <tr>
                 <td class="check-cell"><input type="checkbox" id="study-haslberger"><label for="study-haslberger" class="sr-only">Include Haslberger, Gingrich and Bhatia (2023) in the average</label></td>
-                <td><p class="sname">Haslberger, Gingrich &amp; Bhatia (2023)</p><p class="sdomain">General writing with LLMs</p></td>
-                <td class="n"><span class="sval">—</span></td>
-                <td><span class="usedby-list"><span class="usedby oecd" title="OECD (Filippucci, Gal &amp; Schief)">OECD</span></span></td>
-              </tr>
-              <tr class="toggle-row">
-                <td class="check-cell"><input type="checkbox" id="study-gambacorta"><label for="study-gambacorta" class="sr-only">Include Gambacorta et al. (2024) in the average</label></td>
                 <td>
-                  <p class="sname">Gambacorta et al. (2024)</p>
-                  <p class="sdomain">AI coding assistants, Ant Group CodeFuse</p>
-                  <div class="bryntoggle">
-                    <button type="button" class="btoggle active" data-study="gambacorta" data-value="22" data-measure="tasks completed" aria-pressed="true">22% tasks completed</button>
-                    <button type="button" class="btoggle" data-study="gambacorta" data-value="50" data-measure="code output" aria-pressed="false">50% code output</button>
-                  </div>
-                  <p class="bryntext">The headline is a 50% increase in code output. The authors themselves flag that LLMs inflate code volume and re-measure on tasks completed, getting 22%. The lower figure is their own robustness check, not a rival reading.</p>
+                  <p class="sname">Haslberger, Gingrich &amp; Bhatia (2023)</p>
+                  <p class="sdomain">Experiment with sample of UK Working Age Population using ChatGPT for work tasks</p>
+                  <p class="bryntext">*Calculated by Filippucci et al. (2024), not reported in paper</p>
                 </td>
-                <td class="n"><span class="sval" id="gambacorta-sval">22%</span><span class="smeasure" id="gambacorta-smeasure">tasks completed</span></td>
+                <td class="n"><span class="sval">48%</span><span class="smeasure">Average gain in time and quality</span></td>
+                <td><span class="usedby-list"><span class="usedby oecd" title="OECD (Filippucci, Gal &amp; Schief)">OECD</span></span></td>
+                <td class="link-cell"><a class="slink" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4594466" target="_blank" rel="noopener noreferrer">Link →</a></td>
+              </tr>
+              <tr>
+                <td class="check-cell"><input type="checkbox" id="study-gambacorta"><label for="study-gambacorta" class="sr-only">Include Gambacorta et al. (2024) in the average</label></td>
+                <td><p class="sname">Gambacorta et al. (2024)</p><p class="sdomain">Software developers using CodeFuse, LLM for coding tasks.</p></td>
+                <td class="n"><span class="sval">22%</span><span class="smeasure">Task completion rate</span></td>
                 <td></td>
-              </tr>
-              <tr>
-                <td class="check-cell"><input type="checkbox" id="study-jabarian"><label for="study-jabarian" class="sr-only">Include Jabarian and Henkel (2025) in the average</label></td>
-                <td><p class="sname">Jabarian and Henkel (2025)</p><p class="sdomain">Interviews, AI voice agent</p></td>
-                <td class="n"><span class="sval">17%</span><span class="smeasure">job starts</span></td>
-                <td><span class="usedby-list"><span class="usedby pwbm" title="Penn Wharton Budget Model">PWBM</span></span></td>
-              </tr>
-              <tr>
-                <td class="check-cell"><input type="checkbox" id="study-wiles"><label for="study-wiles" class="sr-only">Include Wiles et al. (2023) in the average</label></td>
-                <td><p class="sname">Wiles et al. (2023)</p><p class="sdomain">Resume writing assistance</p></td>
-                <td class="n"><span class="sval">8%</span><span class="smeasure">likelihood of hire</span></td>
-                <td><span class="usedby-list"><span class="usedby pwbm" title="Penn Wharton Budget Model">PWBM</span></span></td>
+                <td class="link-cell"><a class="slink" href="https://www.sciencedirect.com/science/article/abs/pii/S1572308926000458" target="_blank" rel="noopener noreferrer">Link →</a></td>
               </tr>
             </tbody>
           </table>
+          </div>
           <p class="study-mean" id="study-mean-caption">Mean of 2 selected: 27%</p>
         </details>
         <details class="prov">
@@ -633,26 +818,10 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 
   </div>
 
-  <section class="block beyond">
-    <p class="eyebrow">Beyond Acemoglu and Aghion &amp; Bunel</p>
-    <h3 class="sec">How does the rest of the field predict annual growth due to AI?</h3>
-    <p class="lede">The two estimates above are part of a growing field of literature. Select growth metrics below to see how other studies predict AI will change the economy. We are updating this page as new studies take place.</p>
-
-    <div class="segwrap">
-      <div class="metrictabs" id="metrictabs"></div>
-      <p class="seghint" id="seghint">Select one to compare</p>
-      <p class="metricdef" id="metricdef"></p>
-    </div>
-
-    <div class="numline" id="numline"></div>
-
-    <div class="detail" id="detail" aria-live="polite"></div>
-  </section>
-
   <section class="block">
     <div class="notes">
       <div>
-        <h3 class="sec">Other considerations</h3>
+        <h3 class="sec apparatus-title">Other Considerations</h3>
         <p class="notes-sub">Acemoglu's variants</p>
         <ul class="check-list">
           <li><b>0.53%</b> — hard-to-learn tasks. 72.6% of exposed tasks by wage bill are easy; cost savings on the rest assumed at 7% rather than 27%. The estimate he considers most reasonable.</li>
@@ -667,8 +836,78 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
           <li><b>27%–40%</b> — average cost savings.</li>
           <li><b>57%</b> — labor share, fixed, taken from Acemoglu.</li>
         </ul>
+        <div class="consider-panel" id="considerPanel"></div>
       </div>
     </div>
+  </section>
+
+  <section class="block beyond">
+    <p class="eyebrow">Beyond Acemoglu and Aghion &amp; Bunel</p>
+    <h3 class="sec">How does the rest of the field predict annual growth due to AI?</h3>
+    <p class="lede">The two estimates above are part of a growing field of literature. Select growth metrics below to see how other studies predict AI will change the economy. We are updating this page as new studies take place.</p>
+
+    <div class="segwrap">
+      <div class="metrictabs" id="metrictabs"></div>
+      <p class="seghint" id="seghint">Select one to compare</p>
+      <p class="metricdef" id="metricdef"></p>
+    </div>
+
+    <div class="numline" id="numline"></div>
+
+    <div class="eq-strip" id="eqStrip" hidden>
+      <div class="eq-term eq-baseline">
+        <span class="eq-label" id="eqBaselineLabel">Baseline</span>
+        <span class="eq-value" id="eqBaseline">0.89%</span>
+      </div>
+      <span class="eq-op">+</span>
+      <div class="eq-term eq-selected is-empty" id="eqSelectedTerm">
+        <span class="eq-label" id="eqSelectedLabel">Select an estimate</span>
+        <span class="eq-value" id="eqSelectedValue">—</span>
+      </div>
+      <span class="eq-op">=</span>
+      <div class="eq-term eq-total">
+        <span class="eq-label" id="eqTotalLabel">Implied annual TFP growth</span>
+        <span class="eq-value" id="eqTotal">—</span>
+      </div>
+    </div>
+    <p class="eq-note" id="eqNote" hidden>Baseline is weighted average calculated from <a href="https://www.bls.gov/news.release/archives/prod3_03192026.pdf" target="_blank" rel="noopener noreferrer">2026 BLS News Release Table A</a>.</p>
+
+    <div class="detail" id="detail" aria-live="polite"></div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Contribute</p>
+    <h3 class="sec">Know an estimate we're missing?</h3>
+    <p class="lede">Send us a study and we will consider it for the number line above. Only the first two fields are required.</p>
+
+    <form id="submitForm" class="submitform" action="https://formspree.io/f/YOUR_FORM_ID" method="post">
+      <div class="formgrid">
+        <p class="formfield">
+          <label for="sf-study">Study or author <span class="req">required</span></label>
+          <input class="control" type="text" id="sf-study" name="study" required placeholder="e.g. Filippucci et al. (2026)">
+        </p>
+        <p class="formfield">
+          <label for="sf-link">Link <span class="req">required</span></label>
+          <input class="control" type="url" id="sf-link" name="link" required placeholder="https://">
+        </p>
+        <p class="formfield">
+          <label for="sf-estimate">Estimate <span class="opt">optional</span></label>
+          <input class="control" type="text" id="sf-estimate" name="estimate" placeholder="e.g. 0.4pp per year, TFP">
+        </p>
+        <p class="formfield">
+          <label for="sf-email">Your email <span class="opt">optional</span></label>
+          <input class="control" type="email" id="sf-email" name="email" placeholder="So we can follow up">
+        </p>
+        <p class="formfield formfield-wide">
+          <label for="sf-notes">Notes <span class="opt">optional</span></label>
+          <textarea class="control" id="sf-notes" name="notes" rows="4" placeholder="What does it measure, and how was it derived?"></textarea>
+        </p>
+      </div>
+      <div class="formfoot">
+        <button type="submit" class="submitbtn" id="submitBtn">Submit estimate</button>
+        <span class="submitstatus" id="submitStatus" role="status" aria-live="polite"></span>
+      </div>
+    </form>
   </section>
 
   <section class="block">
@@ -693,21 +932,23 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
               <li>Haskel, Bontadini, Corrado &amp; Jona-Lasinio, <i>AI as an Innovation in the Method of Innovation</i> (2025).</li>
               <li>Cui et al. (2025).</li>
               <li>Dell'Acqua et al. (2023).</li>
-              <li>Jabarian &amp; Henkel (2025).</li>
-              <li>Wiles et al. (2023).</li>
               <li>Arnon, Penn Wharton Budget Model (2025).</li>
             </ul>
-            <p>The wider set of cost-savings studies above is compiled by the Penn Wharton Budget Model (Arnon, 2025), which is where the four additional studies — Cui et al., Dell'Acqua et al., Jabarian &amp; Henkel and Wiles et al. — and their reported values come from.</p>
+            <p>The wider set of cost-savings studies above is compiled by the Penn Wharton Budget Model (Arnon, 2025), which is where the additional studies — Cui et al. and Dell'Acqua et al. — and their reported values come from.</p>
           </div>
         </details>
       </div>
     </div>
   </section>
+
 </div>
 
 <footer class="site">
   <div class="inner">
-    <p>Annual figures divide the cumulative gain evenly across the horizon, following both papers. Illustrative of the formula, not a forecast.</p>
+    <details class="ai-disclosure">
+      <summary>AI disclosure</summary>
+      <p>AI assistance was used to build this site, retrieve and summarize sources, and edit prose. All interpretation is the authors' own, and all figures were verified against the original papers.</p>
+    </details>
     <p class="copy">© 2026</p>
   </div>
 </footer>
@@ -787,16 +1028,12 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     {id:"peng",value:56},
     {id:"cui",value:26},
     {id:"dellacqua",toggle:true},
-    // Haslberger, Gingrich & Bhatia (2023) is the 5th estimate in Figure 3 of
-    // OECD AI Papers No. 29 — no point estimate transcribed yet. value stays
-    // null (not 0) so an unresolved figure is dropped from the mean rather
-    // than counted as a zero cost saving.
-    {id:"haslberger",value:null},
-    {id:"gambacorta",toggle:true},
-    {id:"jabarian",value:17},
-    {id:"wiles",value:8}
+    // 48% is Filippucci et al.'s (2024) calculation from the Haslberger data,
+    // not a figure the paper itself reports — flagged as such in the table.
+    {id:"haslberger",value:48},
+    {id:"gambacorta",value:22}
   ];
-  var toggleValues={bryn:14,dellacqua:12,gambacorta:22};
+  var toggleValues={bryn:14,dellacqua:12};
 
   function recomputeSavings(applyToSlider){
     var caption=el("study-mean-caption");
@@ -870,7 +1107,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     return axis;
   }
   var LANES=[
-    {id:"tfp",name:"Total Factor Productivity",unit:"percentage points per year",color:"#2054B3",tint:"#E0E7F4",max:1.2,
+    {id:"tfp",name:"Total Factor Productivity",unit:"percentage points per year",color:"#2054B3",tint:"#E0E7F4",max:0.8,step:0.2,
      def:"The efficiency residual left over once labor and capital are accounted for — not a directly observed quantity."},
     {id:"lab",name:"Labor Productivity",unit:"percentage points per year",color:"#405731",tint:"#E4E7E2",max:2.5,step:0.5,
      def:"Output per hour worked — includes capital deepening, unlike TFP."},
@@ -898,7 +1135,17 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      cite:"Arnon, Penn Wharton Budget Model (2025).",
      link:"https://budgetmodel.wharton.upenn.edu/p/2025-09-08-the-projected-impact-of-generative-ai-on-future-productivity-growth/",
      body:"The researchers use Acemoglu's same equation but add an AI adoption term, interpret Eloundou et al. differently, and average more experimental studies for the labor cost savings section.</p><p class=\"dbody\">PWBM does not publish a constant yearly growth rate. As a result, the 0.14% is our own calculation based on PWBM's projection of the Contribution of Generative AI to TFP Growth up until 2060. We average their estimates from 2025–2035 to get 0.14%. Contribution to growth will peak at 0.2pp in 2032 and will have a permanent effect of less than 0.04pp."},
+    // role:"baseline" pulls this entry out of the plotted markers entirely —
+    // BLS is a LEVEL of realized growth, while every other entry in the lane
+    // is an AI-attributable increment in percentage points, so putting them
+    // on one axis compares two different things. It keeps its place in the
+    // data because the equation strip below the axis adds the increments to
+    // it; see updateEquation().
     {id:"bls-tfp",lane:"tfp",name:"BLS Actual, 2000–2025",type:"point",value:0.89,display:"≈0.89",
+     role:"baseline",baselineDisplay:"0.89%",
+     baselineLabel:"Baseline",
+     totalLabel:"Implied annual TFP growth",
+     note:'Baseline is weighted average calculated from <a href="https://www.bls.gov/news.release/archives/prod3_03192026.pdf" target="_blank" rel="noopener noreferrer">2026 BLS News Release Table A</a>.',
      headline:"0.89pp per year, actual, 2000–2025",
      cite:"Bureau of Labor Statistics, Total Factor Productivity, private nonfarm business sector, 2000–2025.",
      link:"https://www.bls.gov/mfp/",
@@ -909,12 +1156,12 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      link:"https://www.mckinsey.com/mgi/our-research/generative-ai-and-the-future-of-work-in-america",
      body:"Find that “generative AI has the potential to increase US labor productivity by 0.5 to 0.9 percentage points annually through 2030 in a midpoint adoption scenario.” Researchers use O*NET activities and match each to one or more of 18 technological capabilities to assess what AI could do, then screen for what's feasible solution development timelines, the economics of automating versus paying wages, and time to adopt. Freed labor is assumed to rejoin the workforce, and the range comes from whether it rejoins at 2022 or 2030 productivity levels.</p><p class=\"dbody\">Furthermore, researchers find that combining generative AI with other automation technologies could make potential productivity growth to 3 to 4 percent annually in a midpoint adoption scenario."},
     {id:"oecd-lab",lane:"lab",name:"OECD",type:"range",lo:0.4,hi:1.3,
-     headline:"0.4–1.3pp — United States, annual, 10-year horizon / 0.2–0.8pp — Japan and Italy",
+     headline:"0.4–1.3pp annually in the US",
      cite:"Filippucci, Gal, Laengle &amp; Schief (2025), OECD AI Papers No. 41, “Macroeconomic productivity gains from Artificial Intelligence in G7 economies”.",
      link:"https://www.oecd.org/en/publications/macroeconomic-productivity-gains-from-artificial-intelligence-in-g7-economies_a5319ab5-en.html",
      body:"Using a model adapted from Filippucci et al. (2024), the authors derive AI's productivity gains. Their sectoral productivity growth framework takes into account micro-level worker gains × AI exposure × AI adoption rate and then aggregates using value added shares."},
     {id:"goldman-mar",lane:"lab",name:"Goldman Sachs",type:"point",value:1.5,display:"1.5",
-     headline:"1.5pp per year, labor productivity / +7% global GDP level",
+     headline:"1.5pp per year, labor productivity",
      cite:"Briggs &amp; Kodnani, Goldman Sachs (March 2023), The Potentially Large Effects of AI on Economic Growth.",
      link:"https://www.gspublishing.com/content/research/en/reports/2023/03/27/d64e052b-0f6e-45d7-967b-d7be35fabd16.html",
      body:"Researchers classify 13 work activities from O*NET database as exposed to automation and assume AI can complete tasks up to a difficulty of 4 on the O*NET level scale. They weigh tasks by importance and complexity by occupation and estimate the percentage of a job AI has the potential to replace. Estimates are then weighed by the employment share of each occupation in the US Occupational Employment and wage survey and aggregated to the industry level.</p><p class=\"dbody\">AI raises productivity through two channels — workers whose jobs are partially exposed to AI will dedicate time to higher value tasks and workers whose jobs are fully automated by AI will be reemployed. The researchers find that 63% of employment is complemented and 7% is substituted by AI. By summing up these effects, researchers find that AI could raise overall labor productivity growth by around 1.5pp/year."},
@@ -929,6 +1176,10 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      link:"https://www.anthropic.com/research/estimating-productivity-gains",
      body:"Over the next 10 years, they predict that current generation AI models could increase annual US labor productivity growth by 1.8% over.</p><p class=\"dbody\">They use Claude to determine how much time it takes to complete tasks with and without AI and extrapolate to the entire economy."},
     {id:"bls-lab",lane:"lab",name:"BLS Actual, 2000–2025",type:"point",value:2,display:"≈2.0",
+     role:"baseline",baselineDisplay:"2.0%",
+     baselineLabel:"Baseline",
+     totalLabel:"Implied annual labor productivity growth",
+     note:'Baseline is weighted average calculated from <a href="https://www.bls.gov/news.release/archives/prod3_03192026.pdf" target="_blank" rel="noopener noreferrer">2026 BLS News Release Table A</a>.',
      headline:"2.0pp per year, actual, 2000–2025",
      cite:"Bureau of Labor Statistics, Labor Productivity, nonfarm business sector, 2000–2025.",
      link:"https://www.bls.gov/lpc/",
@@ -942,7 +1193,14 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      headline:"0.4pp US, by 2034 / 0.3pp other developed / 0.2pp advanced emerging",
      cite:"Briggs &amp; Kodnani, Goldman Sachs (November 2023), Revised longer-run forecasts.",
      link:"https://www.gspublishing.com/content/research/en/reports/2023/10/30/2d567ebf-0e7d-4769-8f01-7c62e894a779.html",
-     body:"The same authors cutting their March headline by roughly two-thirds, with around 25% of tasks automatable in advanced economies and 10–20% in emerging ones. Rarely cited alongside the earlier figure, though it is the more recent view — which is worth more to a reader than any single comparison, because it shows updating rather than two camps shouting."}
+     body:"The same authors cutting their March headline by roughly two-thirds, with around 25% of tasks automatable in advanced economies and 10–20% in emerging ones. Rarely cited alongside the earlier figure, though it is the more recent view — which is worth more to a reader than any single comparison, because it shows updating rather than two camps shouting."},
+    // The GDP lane's realized baseline. Unlike the other two lanes this one is
+    // World Bank rather than BLS, so it carries its own source line.
+    {id:"wb-gdp",lane:"gdp",name:"World Bank Actual, United States",type:"point",value:2.22,
+     role:"baseline",baselineDisplay:"2.22%",
+     baselineLabel:"Baseline",
+     totalLabel:"Implied annual GDP growth",
+     note:'Baseline is average calculated from <a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?end=2025&amp;locations=US&amp;start=1961&amp;view=chart" target="_blank" rel="noopener noreferrer">World Bank GDP growth (annual %) - United States</a>.'}
   ];
   var NOFIG=[
     {id:"bick",name:"Bick et al.",title:"Bick et al. (2024)",year:2024,month:9,
@@ -1146,7 +1404,9 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     MAX=lane.max||2.0;AXIS=buildAxis(MAX,lane.step);
     host.style.setProperty("--lane",lane.color);
     host.style.setProperty("--lane-tint",lane.tint);
-    var studies=STUDIES.filter(function(s){return s.lane===lane.id;})
+    // role:"baseline" entries never reach the axis — they are levels, not
+    // increments, and belong to the equation strip below it instead.
+    var studies=STUDIES.filter(function(s){return s.lane===lane.id&&s.role!=="baseline";})
       .slice().sort(function(a,b){return anchor(a)-anchor(b);});
     // Bands and the axis above use the true values throughout — only the
     // small circular dots (and the pill legs that reach down to them) get
@@ -1200,6 +1460,79 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     detail.classList.add("show");
   }
 
+  // ---- baseline + increment equation strip ----
+  // The axis now carries AI-attributable increments only. The strip restates
+  // the selected increment against the lane's realized baseline so the reader
+  // gets the implied total without having to add two figures that are not in
+  // the same units to begin with.
+  function eqEl(id){return document.getElementById(id);}
+  function laneBaseline(laneId){
+    var hit=STUDIES.filter(function(s){return s.lane===laneId&&s.role==="baseline";});
+    return hit.length?hit[0]:null;
+  }
+  // Text swaps fade rather than snap. The pending timer is parked on the
+  // element so a fast second click cancels the first swap instead of racing it.
+  function eqSet(node,html){
+    if(!node)return;
+    if(node._eqTimer){clearTimeout(node._eqTimer);node._eqTimer=null;}
+    if(node.innerHTML===html){node.style.opacity="1";return;}
+    node.style.opacity="0";
+    node._eqTimer=setTimeout(function(){
+      node.innerHTML=html;
+      node.style.opacity="1";
+      node._eqTimer=null;
+    },120);
+  }
+  function eqFmt(n){return n.toFixed(2);}
+
+  function updateEquation(estimate){
+    var strip=eqEl("eqStrip"),note=eqEl("eqNote");
+    if(!strip)return;
+    var base=activeMetric&&activeMetric!=="nofig"?laneBaseline(activeMetric):null;
+    // Nothing selected, or a lane whose items are not commensurable with any
+    // baseline ("Other Measures of Growth"): the strip has nothing to say, so
+    // it goes away rather than showing an empty frame.
+    if(!base){strip.hidden=true;if(note)note.hidden=true;return;}
+    strip.hidden=false;if(note)note.hidden=false;
+    // Same lane colour the number line just took, so the strip reads as a
+    // continuation of the chart rather than a differently-themed component.
+    var laneDef=LANES.filter(function(l){return l.id===activeMetric;})[0];
+    if(laneDef){
+      strip.style.setProperty("--lane",laneDef.color);
+      strip.style.setProperty("--lane-tint",laneDef.tint);
+    }
+    eqEl("eqBaselineLabel").innerHTML=base.baselineLabel;
+    eqEl("eqTotalLabel").innerHTML=base.totalLabel;
+    if(note)note.innerHTML=base.note;
+    eqSet(eqEl("eqBaseline"),base.baselineDisplay);
+
+    var term=eqEl("eqSelectedTerm");
+    if(!estimate){
+      term.classList.add("is-empty");
+      eqEl("eqSelectedLabel").innerHTML="Select an estimate";
+      eqSet(eqEl("eqSelectedValue"),"—");
+      eqSet(eqEl("eqTotal"),"—");
+      return;
+    }
+    term.classList.remove("is-empty");
+    eqEl("eqSelectedLabel").innerHTML=estimate.name;
+    var isRange=estimate.type==="range";
+    // The "≈" on a derived figure (PWBM, Yotzov) carries through to the total —
+    // adding an exact baseline to an approximation does not make it exact.
+    var approx=!isRange&&typeof estimate.display==="string"&&estimate.display.charAt(0)==="≈"?"≈":"";
+    eqSet(eqEl("eqSelectedValue"),
+      (isRange?fnum(estimate.lo)+"–"+fnum(estimate.hi):(estimate.display||fnum(estimate.value)))+" pp");
+    // A range stays a range: collapsing OECD's 0.25–0.6 to a midpoint would
+    // invent a point estimate its authors never published.
+    if(base.placeholder||base.value==null){
+      eqSet(eqEl("eqTotal"),"—");
+    }else if(isRange){
+      eqSet(eqEl("eqTotal"),eqFmt(base.value+estimate.lo)+"–"+eqFmt(base.value+estimate.hi)+"%");
+    }else{
+      eqSet(eqEl("eqTotal"),approx+eqFmt(base.value+estimate.value)+"%");
+    }
+  }
+
   var selected=null;
   function selectStudy(id){
     selected=(selected===id)?null:id;
@@ -1207,6 +1540,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       el.setAttribute("aria-pressed",el.dataset.id===selected?"true":"false");
     });
     renderDetail(selected);
+    updateEquation(selected?ALL[selected]:null);
   }
 
   function selectMetric(id){
@@ -1228,6 +1562,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     selected=null;
     renderDetail(null);
     renderNumline();
+    updateEquation(null);
   }
 
   // The hint fades out the first time any tab is picked and stays gone —
@@ -1255,12 +1590,287 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 
   buildMetricTabs();
   renderNumline();
+  updateEquation(null);
   var tabsEl=document.getElementById("metrictabs"),numlineEl=document.getElementById("numline");
   if(tabsEl)tabsEl.addEventListener("click",onTabClick);
   if(numlineEl)numlineEl.addEventListener("click",onPickClick);
   window.addEventListener("resize",function(){
     var activeBtn=document.querySelector(".mtab.active");
     if(activeBtn)moveSegPill(activeBtn);
+  });
+})();
+
+(function(){
+  // ---- "Other considerations" tiles ----
+  // UNIT: this panel works in CUMULATIVE TFP gain over ten years, never in
+  // annual rates. Acemoglu's variants are natively cumulative and stay as
+  // published. Aghion & Bunel publish an annual rate (0.68pp), converted here
+  // to 6.8% cumulative — without that conversion the two groups sit a factor
+  // of ten apart and cannot be read against each other. Every figure below,
+  // delta pills included, is a cumulative percentage and carries "%", not "pp".
+  var CONSIDERATIONS={
+    acemoglu:{
+      kind:"result",
+      label:"Acemoglu's variants",
+      unit:"",
+      sublabel:"",
+      anchor:{value:0.66,display:"0.66%",note:"Baseline"},
+      items:[
+        {value:"0.66%",result:0.66,isAnchor:true,tag:"Baseline",
+         body:"4.6% of GDP impacted times 14.4% overall cost savings. Acemoglu calls this an upper bound."},
+        {value:"0.89%",result:0.89,tag:"Including Peng et al.",
+         body:"Adding Peng et al. (2023) who observe bigger productivity gains to average cost savings."},
+        {value:"0.90%",result:0.90,tag:"Including Cost Decline Scenarios",
+         body:"Using Svanberg et al.'s cost decline scenario in which computer vision costs decline at a rate of 10% per year, the fraction of feasibly automated tasks can increase to 30%. This result raises GDP share impacted by AI thus raising TFP gains over the next 10 years."},
+        {value:"0.53%",result:0.53,tag:"Hard-to-Learn Tasks",
+         body:"By recognizing the slower productivity gains from hard tasks exposed to AI, TFP growth drops."}
+      ]
+    },
+    aghion:{
+      kind:"parameter",
+      label:"Aghion &amp; Bunel's input intervals",
+      unit:"",
+      sublabel:"",
+      anchor:{value:6.8,display:"6.8%",note:"Median interval",
+        footnote:"Published as 0.68 percentage points of additional annual TFP growth. Converted here to a ten-year cumulative figure."},
+      // lowResult/highResult are the cumulative ten-year TFP outcome when that
+      // one parameter is moved to each end of its range with the other three
+      // held at their central values. Left null until transcribed from the
+      // paper — a tile with null endpoints renders its body text and no shift
+      // row, so the panel is correct while incomplete rather than invented.
+      items:[
+        {value:"18.5–68%",lowResult:null,highResult:null,tag:"Share of GDP exposed",
+         body:"Lower bound comes from Gmyrek et. al (2023) who find 18.5% of exposed tasks from advanced countries and Higher bound comes from Pizzinelli et al. (2023) who find 68% of exposed abilities in the UK."},
+        {value:"23–80%",lowResult:null,highResult:null,tag:"Share profitable to automate",
+         body:"The lower bound comes from Svanberg et. al’s headline figure while the higher bound considers a 50% annual cost reduction scenario based on changing GPU computing power. A 50% cost reduction scenario via Svanberg et al.’s estimates results in 80% of tasks being profitable to automate within 10 years."},
+        {value:"27–40%",lowResult:null,highResult:null,tag:"Average cost savings",
+         body:"Lower bound comes from Acemoglu’s average of Noy and Zhang (2023) and Brynjolfsson et al. (2023), while the upper bound includes Peng et al. (2023) and uses Brynjolfsson et al. (2023)’s productivity estimates for the second and third months."}
+      ]
+    }
+  };
+
+  var considerHost=document.getElementById("considerPanel");
+  if(considerHost){
+    // The result group's anchor is already one of its items; the parameter
+    // group's is not, so it gets prepended as a tile of its own.
+    function tilesOf(g){
+      if(g._tiles)return g._tiles;
+      var t=g.items.slice();
+      if(g.kind==="parameter"){
+        t.unshift({value:g.anchor.display,isAnchor:true,tag:g.anchor.note,
+                   body:g.anchor.footnote,hasFootnote:true});
+      }else if(g.anchor.footnote){
+        t.forEach(function(it){if(it.isAnchor)it.hasFootnote=true;});
+      }
+      g._tiles=t;
+      return t;
+    }
+    function cfmt(n,dp){return n.toFixed(dp)+"%";}
+    function deltaPill(n,dp){
+      var down=n<0;
+      return '<span class="shift-delta is-'+(down?"down":"up")+'">'+
+        (down?"−":"+")+Math.abs(n).toFixed(dp)+"%</span>";
+    }
+    function tileHTML(g,it,idx){
+      // Anchor tiles (Acemoglu's "Baseline", Aghion's "Median estimate") are
+      // the fixed point every shift row is measured against, not a choice
+      // among alternatives — so they render as a plain, unfocusable <div>
+      // rather than a <button>, drop their tag caption entirely, and are
+      // excluded from click/keyboard handling below.
+      if(it.isAnchor){
+        // The fixed-point tile still names itself — Acemoglu's "Baseline",
+        // Aghion's "Median interval" — just in the small mono/blue label
+        // rather than the muted .tile-tag used by the clickable variants.
+        // label comes after the value in the DOM, same order as a regular
+        // tile's value+tag, so the value itself lines up across every tile
+        // in the row regardless of whether it's clickable
+        var anchorLabel=it.tag?'<span class="tile-anchor-label">'+it.tag+'</span>':"";
+        return '<div class="tile-cell">'+
+          '<div class="tile is-anchor is-static" aria-disabled="true">'+
+            '<span class="tile-value">'+it.value+'</span>'+
+            anchorLabel+
+          '</div>'+
+          (it.hasFootnote?'<button type="button" class="fn-marker" aria-expanded="false" aria-label="Where this figure comes from">i</button>':"")+
+          '</div>';
+      }
+      // no caption row — the tag under the value already names each tile
+      return '<div class="tile-cell">'+
+        '<button type="button" class="tile" data-idx="'+idx+'" aria-pressed="false">'+
+          '<span class="tile-value">'+it.value+'</span>'+
+          '<span class="tile-tag">'+it.tag+'</span>'+
+        '</button>'+
+        '</div>';
+    }
+    function groupHTML(key,g){
+      return '<div class="consider-group" data-kind="'+g.kind+'" data-group="'+key+'">'+
+        '<div class="consider-head"><h4 class="consider-label group-label">'+g.label+'</h4>'+
+        (g.sublabel?'<p class="consider-sub">'+g.sublabel+'</p>':"")+'</div>'+
+        (g.unit?'<p class="consider-unit">'+g.unit+'</p>':"")+
+        '<div class="tile-row">'+tilesOf(g).map(function(it,i){return tileHTML(g,it,i);}).join("")+'</div>'+
+        (g.anchor.footnote?'<p class="fn-panel" hidden>'+g.anchor.footnote+'</p>':"")+
+        '<div class="tile-detail" aria-live="polite"></div>'+
+        '</div>';
+    }
+    function detailHTML(g,it){
+      var dp=g.kind==="result"?2:1,html="";
+      var single=!it.isAnchor&&typeof it.result==="number";
+      var ranged=!it.isAnchor&&it.lowResult!=null&&it.highResult!=null;
+      if(single){
+        html+='<div class="shift-row"><span class="shift-from">'+g.anchor.display+"</span>"+
+          '<span class="shift-arrow" aria-hidden="true">→</span>'+
+          '<span class="shift-to" data-to="'+it.result+'" data-dp="'+dp+'">'+cfmt(it.result,dp)+"</span>"+
+          deltaPill(it.result-g.anchor.value,dp)+"</div>";
+      }else if(ranged){
+        var dlo=it.lowResult-g.anchor.value,dhi=it.highResult-g.anchor.value;
+        html+='<div class="shift-row"><span class="shift-from">'+g.anchor.display+"</span>"+
+          '<span class="shift-arrow" aria-hidden="true">→</span>'+
+          '<span class="shift-to">'+
+            '<span class="to-low" data-to="'+it.lowResult+'" data-dp="'+dp+'">'+cfmt(it.lowResult,dp)+"</span>"+
+            '<span class="to-sep" aria-hidden="true">/</span>'+
+            '<span class="to-high" data-to="'+it.highResult+'" data-dp="'+dp+'">'+cfmt(it.highResult,dp)+"</span>"+
+          "</span>"+
+          // negative pill first, whichever end of the range produced it
+          (dlo<=dhi?deltaPill(dlo,dp)+deltaPill(dhi,dp):deltaPill(dhi,dp)+deltaPill(dlo,dp))+
+          "</div>";
+      }
+      if((single||ranged)&&g.kind==="parameter"){
+        html+='<p class="shift-caption">Moving <em>'+it.tag+'</em> across its full range with the other three parameters held at their central values.</p>';
+      }
+      return html+'<p class="tile-body">'+it.body+"</p>";
+    }
+    // The result counts up from the anchor, so the tile reads as a move away
+    // from a fixed point rather than as a free-standing number.
+    function countUp(root,from){
+      var nodes=root.querySelectorAll("[data-to]");
+      if(!nodes.length)return;
+      if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+      var targets=[];
+      Array.prototype.forEach.call(nodes,function(n){
+        targets.push({n:n,to:parseFloat(n.getAttribute("data-to")),dp:parseInt(n.getAttribute("data-dp"),10)});
+      });
+      var t0=null,dur=380;
+      function finish(){targets.forEach(function(t){t.n.textContent=t.to.toFixed(t.dp)+"%";});}
+      function step(ts){
+        if(t0===null)t0=ts;
+        var p=Math.min(1,(ts-t0)/dur),e=1-Math.pow(1-p,3);
+        targets.forEach(function(t){t.n.textContent=(from+(t.to-from)*e).toFixed(t.dp)+"%";});
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      // rAF stops firing while a tab is backgrounded. Without this the figure
+      // would be left frozen part-way between the anchor and the real value —
+      // a wrong number on screen, which matters more than the animation.
+      setTimeout(finish,dur+60);
+    }
+
+    considerHost.innerHTML=Object.keys(CONSIDERATIONS).map(function(k){
+      return groupHTML(k,CONSIDERATIONS[k]);
+    }).join("");
+
+    considerHost.addEventListener("click",function(e){
+      var fn=e.target.closest(".fn-marker");
+      if(fn){
+        var fgrp=fn.closest(".consider-group"),fpanel=fgrp&&fgrp.querySelector(".fn-panel");
+        var open=fn.getAttribute("aria-expanded")==="true";
+        fn.setAttribute("aria-expanded",open?"false":"true");
+        if(fpanel)fpanel.hidden=open;
+        return;
+      }
+      var tile=e.target.closest(".tile");
+      // the anchor tile is a plain, disabled div — nothing to select
+      if(!tile||tile.classList.contains("is-static"))return;
+      var grp=tile.closest(".consider-group"),g=CONSIDERATIONS[grp.getAttribute("data-group")];
+      var detail=grp.querySelector(".tile-detail"),wasActive=tile.classList.contains("is-active");
+      // groups are independent — only this row's tiles are cleared
+      Array.prototype.forEach.call(grp.querySelectorAll(".tile:not(.is-static)"),function(t){
+        t.classList.remove("is-active");t.setAttribute("aria-pressed","false");
+      });
+      if(wasActive){detail.innerHTML="";detail.classList.remove("is-filled");return;}
+      tile.classList.add("is-active");
+      tile.setAttribute("aria-pressed","true");
+      detail.innerHTML=detailHTML(g,tilesOf(g)[parseInt(tile.getAttribute("data-idx"),10)]);
+      detail.classList.add("is-filled");
+      countUp(detail,g.anchor.value);
+    });
+
+    considerHost.addEventListener("keydown",function(e){
+      if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight")return;
+      var tile=e.target.closest&&e.target.closest(".tile");
+      if(!tile)return;
+      var tiles=Array.prototype.slice.call(tile.closest(".tile-row").querySelectorAll(".tile:not(.is-static)"));
+      var i=tiles.indexOf(tile),n=tiles.length;
+      e.preventDefault();
+      tiles[e.key==="ArrowRight"?(i+1)%n:(i-1+n)%n].focus();
+    });
+  }
+})();
+
+(function(){
+  // ---- "Know an estimate we're missing?" submit handler ----
+  // The Formspree endpoint is not provisioned yet. Rather than POST into a
+  // placeholder URL and fail silently, the handler detects the unconfigured
+  // action and hands the same fields to the reader's own mail client, so the
+  // form is never a dead end. Dropping a real form id into the action
+  // attribute is the only change needed to switch it over.
+  var form=document.getElementById("submitForm");
+  if(!form)return;
+  var statusEl=document.getElementById("submitStatus");
+  var btn=form.querySelector('button[type="submit"]');
+  var btnLabel=btn?btn.textContent:"";
+  var CONTACT="gcejas@mitblueprintlabs.org";
+
+  function val(name){
+    var f=form.elements[name];
+    return f&&f.value?f.value.trim():"";
+  }
+
+  form.addEventListener("submit",async function(e){
+    e.preventDefault();
+    if(statusEl){
+      statusEl.classList.remove("is-success","is-error");
+      statusEl.textContent="";
+    }
+
+    var study=val("study"),link=val("link"),estimate=val("estimate"),
+        email=val("email"),notes=val("notes");
+    var action=form.getAttribute("action")||"";
+
+    if(action.indexOf("YOUR_FORM_ID")!==-1){
+      var subject=encodeURIComponent("Growth estimate submission: "+study);
+      var body=encodeURIComponent(
+        "Study or author: "+study+"\n"+
+        "Link: "+link+"\n"+
+        "Estimate: "+(estimate||"—")+"\n"+
+        "Submitter email: "+(email||"—")+"\n\n"+
+        "Notes:\n"+(notes||"—")
+      );
+      if(statusEl)statusEl.textContent="Opening your mail client…";
+      window.location.href="mailto:"+CONTACT+"?subject="+subject+"&body="+body;
+      return;
+    }
+
+    if(btn){btn.disabled=true;btn.textContent="Sending…";}
+    try{
+      var res=await fetch(action,{
+        method:"POST",
+        body:new FormData(form),
+        headers:{"Accept":"application/json"}
+      });
+      if(!res.ok)throw new Error("HTTP "+res.status);
+      form.reset();
+      if(statusEl){
+        statusEl.textContent="Thanks — we'll take a look.";
+        statusEl.classList.add("is-success");
+      }
+    }catch(err){
+      if(statusEl){
+        // rendered as markup so the fallback address is actually clickable
+        statusEl.innerHTML='Something went wrong. Email us at <a href="mailto:'+CONTACT+'">'+CONTACT+"</a> instead.";
+        statusEl.classList.add("is-error");
+      }
+    }finally{
+      if(btn){btn.disabled=false;btn.textContent=btnLabel;}
+    }
   });
 })();
 </script>
