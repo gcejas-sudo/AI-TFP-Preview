@@ -312,10 +312,6 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .rowzone.below .marker:active{transform:translateY(-1px) translateX(var(--tx,-50%))}
 .marker:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .marker .pv{font-family:var(--mono);font-size:.85em}
-/* PWC and Filippucci et al. fall within days of each other on the "Other
-   Measures of Growth" timeline, landing their pills on top of one another;
-   nudge PWC clear rather than move either study's actual date. */
-.marker[data-id="pwc"]{margin-left:56px}
 .marker[aria-pressed="true"]{background:var(--lane);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 
 .numline .track{position:relative;z-index:2;height:10px;background:var(--lane);border-radius:5px}
@@ -1111,28 +1107,28 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      def:"The efficiency residual left over once labor and capital are accounted for — not a directly observed quantity."},
     {id:"lab",name:"Labor Productivity",unit:"percentage points per year",color:"#405731",tint:"#E4E7E2",max:2.5,step:0.5,
      def:"Output per hour worked — includes capital deepening, unlike TFP."},
-    {id:"gdp",name:"GDP Growth",unit:"percentage points per year",color:"#C60615",tint:"#F7DCDE",max:2.0,step:0.5,
+    {id:"gdp",name:"GDP Growth",unit:"percentage points per year",color:"#C60615",tint:"#F7DCDE",max:1.0,step:0.2,
      def:"The economy's total output growth — the broadest of the three, and the furthest from any single mechanism."}
   ];
   var STUDIES=[
     {id:"acemoglu",lane:"tfp",name:"Acemoglu",type:"point",value:0.07,display:"0.07",
      headline:"0.07pp per year / 0.66% cumulative, 10 yr",
-     cite:"Acemoglu (2024, 2025), NBER WP 32487; Economic Policy 40(121).",
-     link:"https://www.nber.org/papers/w32487",
+     cite:"The Simple Macroeconomics of AI, Acemoglu (2024).",
+     link:"https://shapingwork.mit.edu/research/the-simple-macroeconomics-of-ai/",
      body:"As shown above, the estimate represents the product of the GDP share of exposed tasks × Share Profitable to Automate × Average Cost Savings × AI-Exposure Adjusted Labor Share.</p><p class=\"dbody\">In the “Other Considerations” section, we discuss Acemoglu's robustness checks and alternative calculations."},
     {id:"oecd",lane:"tfp",name:"OECD",type:"range",lo:0.25,hi:0.6,
      headline:"0.25–0.6pp per year",
-     cite:"Filippucci, Gal &amp; Schief (2024), OECD AI Papers No. 29, “Miracle or Myth?”.",
+     cite:"“Miracle or Myth?”, Filippucci, Gal &amp; Schief (2024).",
      link:"https://www.oecd.org/en/publications/miracle-or-myth-assessing-the-macroeconomic-productivity-gains-from-artificial-intelligence_b524a072-en.html",
      body:"OECD researchers calculate sector-level productivity gains using a similar formula to Acemoglu and Aghion &amp; Bunel, yet apply a sectoral productivity growth framework that takes into account micro-level worker gains × AI exposure × AI adoption rate. The sector-specific AI exposure index is based on Eloundou et al.'s rate, ranging from 12–50%. Average cost savings come from three randomized control trials measuring “performance improvement observed after the adoption of AI in a range of activities.” Furthermore, they add a high and low adoption rate — 23% and 40% — based on the adoption rates of other technologies. Sectoral gains are then aggregated through a theoretical model capturing input-output linkages and sectoral reallocation as relative prices change."},
     {id:"aghion",lane:"tfp",name:"Aghion &amp; Bunel",type:"point",value:0.68,display:"0.68",
      headline:"0.68pp per year / 6.84% cumulative, 10 yr",
-     cite:"Aghion &amp; Bunel (2024), AI and Growth: Where Do We Stand?",
+     cite:"AI and Growth: Where Do We Stand?, Aghion &amp; Bunel (2024).",
      link:"https://www.frbsf.org/wp-content/uploads/AI-and-Growth-Aghion-Bunel.pdf",
      body:"As shown above, the estimate represents the product of the GDP share of exposed tasks × Share Profitable to Automate × Average Cost Savings × AI-Exposure Adjusted Labor Share.</p><p class=\"dbody\">In the “Other Considerations” section, we discuss Aghion &amp; Bunel's intervals."},
     {id:"pwbm",lane:"tfp",name:"PWBM",type:"point",value:0.14,display:"≈0.14",
      headline:"≈0.14pp per year is our average from their 2025 to 2035 projections / 0.20pp peak, 2032 / &lt;0.04pp permanent",
-     cite:"Arnon, Penn Wharton Budget Model (2025).",
+     cite:"The Projected Impact of Generative AI on Future Productivity Growth, Arnon (2025).",
      link:"https://budgetmodel.wharton.upenn.edu/p/2025-09-08-the-projected-impact-of-generative-ai-on-future-productivity-growth/",
      body:"The researchers use Acemoglu's same equation but add an AI adoption term, interpret Eloundou et al. differently, and average more experimental studies for the labor cost savings section.</p><p class=\"dbody\">PWBM does not publish a constant yearly growth rate. As a result, the 0.14% is our own calculation based on PWBM's projection of the Contribution of Generative AI to TFP Growth up until 2060. We average their estimates from 2025–2035 to get 0.14%. Contribution to growth will peak at 0.2pp in 2032 and will have a permanent effect of less than 0.04pp."},
     // role:"baseline" pulls this entry out of the plotted markers entirely —
@@ -1152,29 +1148,29 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      body:"Realized total factor productivity growth over 2000–2025, from published BLS data — not a model estimate and not AI-specific. Shown for scale: every other marker in this lane is a projection of AI's contribution alone, against a historical baseline this small."},
     {id:"mckinsey",lane:"lab",name:"McKinsey",type:"range",lo:0.5,hi:0.9,
      headline:"0.5–0.9pp per year",
-     cite:"Chui et al., McKinsey Global Institute (2023), The economic potential of generative AI.",
+     cite:"Generative AI and the future of work in America, Ellingrud et al. (2023).",
      link:"https://www.mckinsey.com/mgi/our-research/generative-ai-and-the-future-of-work-in-america",
      body:"Find that “generative AI has the potential to increase US labor productivity by 0.5 to 0.9 percentage points annually through 2030 in a midpoint adoption scenario.” Researchers use O*NET activities and match each to one or more of 18 technological capabilities to assess what AI could do, then screen for what's feasible solution development timelines, the economics of automating versus paying wages, and time to adopt. Freed labor is assumed to rejoin the workforce, and the range comes from whether it rejoins at 2022 or 2030 productivity levels.</p><p class=\"dbody\">Furthermore, researchers find that combining generative AI with other automation technologies could make potential productivity growth to 3 to 4 percent annually in a midpoint adoption scenario."},
     {id:"oecd-lab",lane:"lab",name:"OECD",type:"range",lo:0.4,hi:1.3,
      headline:"0.4–1.3pp annually in the US",
-     cite:"Filippucci, Gal, Laengle &amp; Schief (2025), OECD AI Papers No. 41, “Macroeconomic productivity gains from Artificial Intelligence in G7 economies”.",
+     cite:"“Macroeconomic productivity gains from Artificial Intelligence in G7 economies”, Filippucci, Gal, Laengle &amp; Schief (2025).",
      link:"https://www.oecd.org/en/publications/macroeconomic-productivity-gains-from-artificial-intelligence-in-g7-economies_a5319ab5-en.html",
      body:"Using a model adapted from Filippucci et al. (2024), the authors derive AI's productivity gains. Their sectoral productivity growth framework takes into account micro-level worker gains × AI exposure × AI adoption rate and then aggregates using value added shares."},
     {id:"goldman-mar",lane:"lab",name:"Goldman Sachs",type:"point",value:1.5,display:"1.5",
      headline:"1.5pp per year, labor productivity",
-     cite:"Briggs &amp; Kodnani, Goldman Sachs (March 2023), The Potentially Large Effects of AI on Economic Growth.",
+     cite:"The Potentially Large Effects of AI on Economic Growth, Briggs &amp; Kodnani (2023).",
      link:"https://www.gspublishing.com/content/research/en/reports/2023/03/27/d64e052b-0f6e-45d7-967b-d7be35fabd16.html",
      body:"Researchers classify 13 work activities from O*NET database as exposed to automation and assume AI can complete tasks up to a difficulty of 4 on the O*NET level scale. They weigh tasks by importance and complexity by occupation and estimate the percentage of a job AI has the potential to replace. Estimates are then weighed by the employment share of each occupation in the US Occupational Employment and wage survey and aggregated to the industry level.</p><p class=\"dbody\">AI raises productivity through two channels — workers whose jobs are partially exposed to AI will dedicate time to higher value tasks and workers whose jobs are fully automated by AI will be reemployed. The researchers find that 63% of employment is complemented and 7% is substituted by AI. By summing up these effects, researchers find that AI could raise overall labor productivity growth by around 1.5pp/year."},
     {id:"yotzov",lane:"lab",name:"Yotzov et al.",type:"point",value:0.47,display:"≈0.47",
-     headline:"≈0.47pp per year — elaborated from a reported 1.4% over 3 yr, not stated as an annual rate",
+     headline:"≈0.47pp per year — elaborated from a reported 1.4% over 3 yr, not stated as an annual rate / Firm level metric",
      cite:"Firm Data on AI, Yotzov et al. (2026).",
      link:"https://www.nber.org/papers/w34836",
-     body:"Over the next three years, firms predict that the adoption of AI will boost productivity (measured as sales per employee) by around 1.4%, on average.</p><p class=\"dbody\">They survey nearly 6,000 senior business executives at US, UK, German, and Australian firms to develop new evidence on AI adoption and its effects on jobs, productivity, and output.</p><p class=\"dbody\">0.47pp per year is roughly annualized from the authors' reported 1.4% growth in labor productivity over three years."},
+     body:"Over the next three years, firm executives in the survey predict that the adoption of AI will boost productivity (measured as sales per employee) by around 1.4%, on average within their firms.</p><p class=\"dbody\">Researchers survey nearly 6,000 senior business executives at US, UK, German, and Australian firms to develop new evidence on AI adoption and its effects on jobs, productivity, and output.</p><p class=\"dbody\">0.47pp per year is roughly annualized from the authors' reported 1.4% growth in labor productivity over three years."},
     {id:"tamkin",lane:"lab",name:"Anthropic",type:"point",value:1.8,display:"1.8",
      headline:"1.8pp per year, over the next 10 years",
-     cite:"Estimating AI productivity gains from Claude conversations, Tamkin &amp; McCrory (2025), Anthropic.",
+     cite:"Estimating AI productivity gains from Claude conversations, Tamkin &amp; McCrory (2025).",
      link:"https://www.anthropic.com/research/estimating-productivity-gains",
-     body:"Over the next 10 years, they predict that current generation AI models could increase annual US labor productivity growth by 1.8% over.</p><p class=\"dbody\">They use Claude to determine how much time it takes to complete tasks with and without AI and extrapolate to the entire economy."},
+     body:"Over the next 10 years, they predict that current generation AI models could increase annual US labor productivity growth by 1.8 pp.</p><p class=\"dbody\">They use Claude to determine how much time it takes to complete tasks with and without AI and extrapolate to the entire economy."},
     {id:"bls-lab",lane:"lab",name:"BLS Actual, 2000–2025",type:"point",value:2,display:"≈2.0",
      role:"baseline",baselineDisplay:"2.0%",
      baselineLabel:"Baseline",
@@ -1186,14 +1182,14 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      body:"Realized labor productivity growth over 2000–2025, from published BLS data — not a model estimate and not AI-specific. Shown for scale: every other marker in this lane is a projection of AI's contribution alone, against a historical baseline several times its size."},
     {id:"acemoglu-gdp",lane:"gdp",name:"Acemoglu",type:"point",value:0.12,display:"≈0.12",
      headline:"≈0.12pp per year / 1.16% cumulative, 10 yr",
-     cite:"Acemoglu (2024, 2025), NBER WP 32487; Economic Policy 40(121).",
-     link:"https://www.nber.org/papers/w32487",
-     body:"Converts his own TFP estimate into a GDP growth figure: GDP gains over ten years = TFP gains over ten years ÷ (1 − capital share). Applied to his 0.66% cumulative TFP estimate, this gives 1.16% cumulative GDP growth over the decade — his main estimate, plotted here as ≈0.12pp a year. Taking into account that some of the remaining exposed tasks are hard to learn, with no objective outcome measure to train on, he offers a lower estimate of 0.93% cumulative instead."},
+     cite:"The Simple Macroeconomics of AI, Acemoglu (2024).",
+     link:"https://shapingwork.mit.edu/research/the-simple-macroeconomics-of-ai/",
+     body:"Acemoglu converts his own TFP estimate to calculate GDP growth using the equation: GDP gains over the next 10 years = TFP gains over the next 10 years ÷ (1 − capital share). From this equation he derives a 1.16% GDP growth due to AI over the next 10 years. Taking into account the presence of exposed tasks, this number falls to 0.93%.</p><p class=\"dbody\">We convert this figure into an annual percentage point increase at ≈0.12pp a year."},
     {id:"goldman-nov",lane:"gdp",name:"Goldman Sachs",type:"point",value:0.4,display:"0.4",
-     headline:"0.4pp US, by 2034 / 0.3pp other developed / 0.2pp advanced emerging",
-     cite:"Briggs &amp; Kodnani, Goldman Sachs (November 2023), Revised longer-run forecasts.",
+     headline:"0.4pp US, by 2034 / 0.3pp other developing markets / 0.2pp in advanced emerging markets",
+     cite:"Revised longer-run forecasts, Briggs &amp; Kodnani (2023).",
      link:"https://www.gspublishing.com/content/research/en/reports/2023/10/30/2d567ebf-0e7d-4769-8f01-7c62e894a779.html",
-     body:"The same authors cutting their March headline by roughly two-thirds, with around 25% of tasks automatable in advanced economies and 10–20% in emerging ones. Rarely cited alongside the earlier figure, though it is the more recent view — which is worth more to a reader than any single comparison, because it shows updating rather than two camps shouting."},
+     body:"Analysts use a forecast model to predict that AI will contribute 0.4 pp to US GDP in the second half of their 10 year forecast horizon (up to 2034)."},
     // The GDP lane's realized baseline. Unlike the other two lanes this one is
     // World Bank rather than BLS, so it carries its own source line.
     {id:"wb-gdp",lane:"gdp",name:"World Bank Actual, United States",type:"point",value:2.22,
@@ -1204,34 +1200,40 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   ];
   var NOFIG=[
     {id:"bick",name:"Bick et al.",title:"Bick et al. (2024)",year:2024,month:9,
-     headline:"1.1% aggregate productivity gain, level effect / 5.4% time savings among genAI work users / 1.4% time savings across all workers",
+     // headline pills removed for now — see Sept 2026 request to strip the
+     // white figure bubbles from "Other Measures of Growth". Restore by
+     // uncommenting: "1.1% aggregate productivity gain, level effect / 5.4%
+     // time savings among genAI work users / 1.4% time savings across all workers"
      cite:"The Rapid Adoption of Generative AI",
      link:"https://www.nber.org/papers/w32966",
-     body:"The authors field a nationally representative US survey of generative AI use at work and at home. To estimate the effect on aggregate productivity, they ask users “how many additional hours they would have needed to complete the same amount of work in the previous week if they had not had access to genAI,” giving mean time savings of 5.4% among users and 1.4% across all workers including non-users. Fed into a standard model of aggregate production, that implies a potential aggregate productivity gain of 1.1% at “current levels of worker genAI usage.” The paper's other contributions are its measures of genAI adoption and of heterogeneity in adoption across workers, occupations and industries."},
-    {id:"oecd-g7",name:"Filippucci et al.",year:2025,month:6,
-     cite:"Filippucci, Gal, Laengle &amp; Schief (2025), OECD Working Paper.",
-     link:"https://www.oecd.org/en/publications/macroeconomic-productivity-gains-from-artificial-intelligence-in-g7-economies_a5319ab5-en.html",
-     body:"The country-by-country version of the sectoral framework, applied across the G7."},
-    {id:"oecd-cross",name:"SUERF",year:2026,month:5,
-     cite:"Filippucci, Gal, Laengle, Schief &amp; Yildirim (2026), SUERF Policy Brief 1463.",
-     link:"https://www.suerf.org/wp-content/uploads/2026/05/SUERF-Policy-Brief-1463_Filippucci-Gal-Laengle-Schief-Yildirim.pdf",
-     body:"Global trade linkages and the distribution of AI gains across countries — the closest existing work to the country layers on the next tab, and worth reading before extending them."},
-    {id:"translation",name:"Merali",year:2024,month:9, // arXiv 2409.02391 — the ID's YYMM prefix is the submission date
-     cite:"Scaling laws in LLM-assisted translation (2024), arXiv 2409.02391.",
-     link:"https://arxiv.org/abs/2409.02391",
-     body:"Holds exposure at 19.9% and the labor share at 0.57 and moves only the cost-savings parameter, using its own experimental scaling-law estimates. The published precedent for what the dials on this page do, and confirmation that the four-parameter reading of the formula is standard."},
-    {id:"haskel",name:"Bontadini et al.",year:2025,
-     cite:"Haskel, Bontadini, Corrado &amp; Jona-Lasinio (2025), AI as an Innovation in the Method of Innovation.",
+     body:"The researchers use a US survey of genAI usage at work and home and make it nationally representative. They present a rough estimate of genAI on aggregate productivity by asking users “how many additional hours they would have needed to complete the same amount of work in the previous week if they had not had access to genAI.” By using a standard model of aggregate production, the authors find a potential aggregate productivity of 1.1% at “current levels of worker gen AI usage.” In addition to this the authors also study genAI adoption and heterogeneity in adoption."},
+    // Filippucci et al. (formerly "oecd-g7") and SUERF (formerly "oecd-cross")
+    // removed per request — see git history to restore either entry.
+    {id:"translation",name:"Merali",year:2025,month:12, // arXiv 2512.21316 — the ID's YYMM prefix is the submission date
+     cite:"Scaling Laws for Economic Productivity: Experimental Evidence in LLM-Assisted Consulting, Data Analyst, and Management Tasks, Merali (2025).",
+     link:"https://arxiv.org/pdf/2512.21316",
+     body:"This paper researches scaling laws - defined as “empirical elasticities mapping the computational scale and algorithmic progress of Large Language Models (LLMs) to human professional productivity.” By measuring workers' task completion with different AI models, the author finds that newer models with more compute power improved worker productivity. This result demonstrates the importance of model scaling for productivity gains, potentially boosting US productivity up to 20% in the next decade."},
+    {id:"haskel",name:"Bontadini et al.",year:2024,
+     cite:"Haskel, Bontadini, Corrado &amp; Jona-Lasinio (2024), AI as an Innovation in the Method of Innovation.",
      link:"https://www.aeaweb.org/articles?id=10.1257/pandp.20261036",
-     body:"A different channel entirely. If AI's main effect is on the productivity of research rather than on the cost of existing tasks, none of the exposure parameters on this page measure the thing that matters."},
+     body:"By viewing AI as an innovation in the method of innovation and a GPT, the researchers use a two sector model and growth accounting framework to estimate AI's impact on productivity. Ultimately, they find that AI's development and use is contributing to one half of the productivity growth in the US."},
     {id:"baslandze",name:"Baslandze et al.",title:"Baslandze et al. (2026)",year:2026,month:4,
-     headline:"0.6% implied labor productivity growth, 2025 realised / 1.8% expected, 2026",
+     // headline pill removed for now, see note on "bick" above. Restore:
+     // "0.6% implied labor productivity growth, 2025 realised / 1.8% expected, 2026"
      cite:"Baslandze et al. (2026), The CFO Survey (Duke, Richmond Fed &amp; Atlanta Fed).",
-     body:"Survey of 734 corporate executives, mostly CFOs, through The CFO Survey run by Duke and the Richmond and Atlanta Feds. The figure is self-reported AI-attributed revenue growth minus AI-attributed employment growth, so it is revenue per employee rather than value added. Capital deepening accounts for only about 15% of it; the rest is revenue-based TFP. Gains are strongest in high-skill services and finance, and are associated with product development and customer reach rather than with cost cutting."},
+     link:"https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6410338",
+     body:"The paper is based on a survey of 750 corporate executives asked about the effects of AI on productivity and the workforce. The authors find that AI adoption varies across firms and labor productivity gains are positive, especially in high-skills services and finance. Furthermore, they observe that the composition of workers' jobs has changed as tasks shift due to AI exposure instead of aggregate job losses."},
     {id:"pwc",name:"PWC",title:"PWC",year:2025,
-     headline:"15% higher global GDP over 10 yr — favourable scenario / 8% — lower trust and cooperation / 1% — pessimistic case",
+     // headline pills removed for now, see note on "bick" above. Restore:
+     // "15% higher global GDP over 10 yr — favourable scenario / 8% — lower
+     // trust and cooperation / 1% — pessimistic case"
      cite:"PwC (2025), Value in Motion.",
-     body:"Up to 15% higher global economic output over the next decade in their most favourable scenario, 8% under lower trust and cooperation, and 1% in their pessimistic case. A level effect on global GDP, not a growth rate."}
+     link:"https://www.pwc.com/gx/en/news-room/press-releases/2025/ai-adoption-could-boost-global-gdp-by-an-additional-15-percentage.html",
+     body:"PwC predicts a potential 15% increase in economic output depending on “responsible deployment, clear governance and public and organisational trust.” Other more pessimistic scenarios lower this estimate to 1-8%."},
+    {id:"karger",name:"Karger et al.",title:"Karger et al. (2026)",year:2026,month:5,
+     cite:"Forecasting the Economic Effects of AI, Karger et al. (2026), Federal Reserve Bank of Chicago Working Paper No. 2026-07.",
+     link:"https://www.chicagofed.org/publications/working-papers/2026/2026-07",
+     body:"This paper uses a range of forecasts from economists, AI company employees, AI policy researchers, accurate forecasters, and the general public and finds the median respondent predicts a 2.5% annual GDP growth rate."}
   ];
 
   var ALL={};
@@ -1295,7 +1297,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   // selecting it repoints the line at NOFIG instead (see renderNumline).
   var METRICS=LANES.map(function(l){return {id:l.id,name:l.name,color:l.color,tint:l.tint};})
     .concat([{id:"nofig",name:"Other Measures of Growth",color:"#EF5D00",tint:"#FDE8DB",
-      def:"Frameworks and extensions without a single point estimate — shown here by publication year, oldest to newest, instead of by size."}]);
+      def:"Other frameworks and extensions shown here by publication year, oldest to newest, instead of by size."}]);
 
   function renderMarker(s,dotPct){
     var p=pct(anchor(s));
@@ -1325,9 +1327,13 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   }
 
   // Same pill/stem treatment as renderMarker, but for a NOFIG item: a name
-  // and a bare year instead of a name and a "%" figure.
-  function renderYearMarker(item){
-    var p=yearPct(dateVal(item));
+  // and a bare year instead of a name and a "%" figure. dotPct works exactly
+  // like renderMarker's — when two items land close enough in time that
+  // their true dates would give them the same (or overlapping) dot, this is
+  // where the nudged position comes from, so the pill's stem points at the
+  // same nudged spot as the dot on the track instead of its raw, colliding one.
+  function renderYearMarker(item,dotPct){
+    var p=dotPct&&dotPct[item.id]!=null?dotPct[item.id]:yearPct(dateVal(item));
     return '<button type="button" class="marker" data-id="'+item.id+'" aria-pressed="false" style="left:'+p+'%;--tx:'+edgeTx(p)+'"><span class="pname">'+item.name+'</span><span class="pv">'+item.year+'</span></button>'+
       '<i class="stem" aria-hidden="true" style="left:'+p+'%"></i>';
   }
@@ -1391,12 +1397,24 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       host.style.setProperty("--lane","#EF5D00");
       host.style.setProperty("--lane-tint","#FDE8DB");
       var items=NOFIG.slice().sort(function(a,b){return dateVal(a)-dateVal(b);});
+      // Same cascading min-gap nudge as the pp/year lanes' DOT_GAP (see
+      // above): two NOFIG entries published close enough in time — e.g. a
+      // month apart — would otherwise land on top of each other here, since
+      // nothing else was spreading their dots apart on this axis.
+      var YEAR_DOT_GAP=3.5;
+      var yearDotSpecs=items.map(function(it){return {key:it.id,pct:yearPct(dateVal(it))};})
+        .sort(function(a,b){return a.pct-b.pct;});
+      for(var ydi=1;ydi<yearDotSpecs.length;ydi++){
+        if(yearDotSpecs[ydi].pct-yearDotSpecs[ydi-1].pct<YEAR_DOT_GAP)yearDotSpecs[ydi].pct=yearDotSpecs[ydi-1].pct+YEAR_DOT_GAP;
+      }
+      var yearDotPct={};
+      yearDotSpecs.forEach(function(d){yearDotPct[d.key]=d.pct;});
       var nsides=splitSides(items,function(it){return yearPct(dateVal(it));});
-      var nhtml='<div class="rowzone above">'+nsides.above.map(renderYearMarker).join("")+"</div>";
+      var nhtml='<div class="rowzone above">'+nsides.above.map(function(it){return renderYearMarker(it,yearDotPct);}).join("")+"</div>";
       nhtml+='<div class="track">'+trackScaffold(YEAR_AXIS,yearPct,function(y){return String(y);});
-      items.forEach(function(it){nhtml+='<i class="dot" aria-hidden="true" data-id="'+it.id+'" style="left:'+yearPct(dateVal(it))+'%"></i>';});
+      items.forEach(function(it){nhtml+='<i class="dot" aria-hidden="true" data-id="'+it.id+'" style="left:'+yearDotPct[it.id]+'%"></i>';});
       nhtml+="</div>";
-      nhtml+='<div class="rowzone below">'+nsides.below.map(renderYearMarker).join("")+"</div>";
+      nhtml+='<div class="rowzone below">'+nsides.below.map(function(it){return renderYearMarker(it,yearDotPct);}).join("")+"</div>";
       host.innerHTML=nhtml;
       return;
     }
