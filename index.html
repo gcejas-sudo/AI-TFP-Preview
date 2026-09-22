@@ -48,6 +48,7 @@ a{color:var(--blue)}
 .masthead .inner{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:20px}
 .sitename{text-decoration:none;color:var(--navy);font-weight:800;font-size:1.05rem;letter-spacing:-.01em;line-height:1.15;padding-bottom:14px;display:block}
 .sitename small{display:block;font-family:var(--mono);font-size:.66rem;font-weight:400;letter-spacing:.13em;text-transform:uppercase;color:var(--gray-text);margin-top:4px}
+.site-logo{display:block;height:56px;width:auto;max-width:100%;padding-bottom:14px}
 .tabs{display:flex;gap:clamp(14px,2.4vw,32px);flex-wrap:wrap}
 .tabs a{
   text-decoration:none;color:var(--blue);font-weight:700;font-size:.9rem;text-transform:uppercase;
@@ -58,7 +59,9 @@ a{color:var(--blue)}
 .tabs a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
 /* ---------- hero ---------- */
-.hero{background:linear-gradient(90deg,var(--navy-deep) 0%,#2C4160 38%,#5E7370 65%,var(--sage) 100%);color:var(--white)}
+/* matches the Stone Center brand gradient ("Basic gradient.svg": #02305A →
+   #809673, originally diagonal), rotated to horizontal for the hero band */
+.hero{background:linear-gradient(90deg,#02305A 0%,#809673 100%);color:var(--white)}
 .hero .inner{padding-top:clamp(38px,6vw,74px);padding-bottom:clamp(38px,6vw,74px)}
 .hero .theme{font-size:.86rem;font-weight:600;letter-spacing:.02em;opacity:.92;margin:0 0 14px}
 .hero h1{font-weight:800;font-size:clamp(1.9rem,5.2vw,3.4rem);line-height:.95;letter-spacing:-.025em;margin:0;max-width:28ch;text-transform:uppercase}
@@ -153,9 +156,24 @@ footer.site details.ai-disclosure p{margin:10px 0 0}
 .dialgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,24px);align-items:stretch}
 @media(max-width:720px){.dialgrid{grid-template-columns:1fr}}
 .dialgrid .dial{margin-bottom:0}
-.formula{background:var(--navy);color:#fff;margin:34px auto 40px;padding:16px clamp(14px,3vw,26px);font-family:var(--mono);font-size:clamp(.62rem,2.4vw,1.6rem);font-weight:700;display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:.4em .5em;width:fit-content;max-width:100%}
-.formula .v{font-weight:700;padding:.14em .4em;background:#ffffff1f;white-space:nowrap}
-.formula .op{opacity:.55}
+/* extra bottom padding reserves room for .flabel, which sits outside the
+   flex flow (see .fterm below) and would otherwise spill past this box */
+.formula{background:var(--navy);color:#fff;margin:34px auto 40px;padding:16px clamp(14px,3vw,26px) 64px;font-family:var(--mono);font-size:clamp(.62rem,2.4vw,1.6rem);font-weight:700;display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:.4em .5em;width:fit-content;max-width:100%}
+/* fixed width so all four value chips line up evenly regardless of how many
+   digits each percentage has — the strip (width:fit-content) simply grows
+   to fit the now-wider row rather than the chips staying uneven */
+.formula .v{font-weight:700;padding:.14em .4em;background:#ffffff1f;white-space:nowrap;min-width:3.4em;box-sizing:border-box;text-align:center;display:inline-block}
+/* flabel is taken out of flow (position:absolute) so a longer label that
+   wraps to more lines never changes .fterm's own height — every .fterm's
+   height is just its .v box, so .formula's align-items:center lines up all
+   four value chips on the exact same row regardless of label length below */
+.formula .fterm{position:relative}
+.formula .flabel{
+  position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:.4em;
+  font-size:clamp(.38rem,1vw,.56rem);font-weight:500;letter-spacing:.02em;color:#ffffffbf;
+  white-space:normal;width:9em;line-height:1.2;text-align:center;
+}
+.formula .op{opacity:.55;align-self:center}
 .formula .out{margin-left:.3em;white-space:nowrap}
 .formula .out b{background:var(--sage);color:var(--navy-deep);padding:.16em .5em;font-weight:800;font-size:1.5em}
 .dial{background:var(--white);padding:24px clamp(16px,2.4vw,26px);margin-bottom:14px}
@@ -282,9 +300,23 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .rowzone:empty{display:none}
 .rowzone.above{margin-bottom:24px}
 .rowzone.below{margin-top:40px}
+/* Additive: a second tier for one lane's one range (aghion-lab), which
+   overlaps McKinsey's own tier-1 bracket and needs to sit clear of it
+   rather than share its row. Grows the "above" zone and re-anchors its
+   normal (tier-1) markers to the BOTTOM of that taller box — same visual
+   distance from the track as always — so only .tier-2 items move, pinned
+   instead to the TOP of the taller box, well above tier-1. Legs/bridge are
+   unaffected either way: they anchor off the zone's bottom edge, which
+   hasn't moved. */
+.rowzone.above.has-tier2{height:130px}
+.rowzone.above.has-tier2 .marker:not(.tier-2){top:auto;bottom:0}
+.marker.tier-2{z-index:6}
 .stem{position:absolute;width:2px;background:var(--lane);transform:translateX(-50%);pointer-events:none;z-index:3}
 .rowzone.above .stem{top:calc(100% - 9px);height:40px}
-.rowzone.below .stem{bottom:calc(100% - 9px);height:40px}
+/* 9px inside the zone, then up across the 40px gap to the dot's CENTRE
+   (half of the 10px bar) — 54, not 40, which stopped 14px short and left a
+   visible break between the stem and the circle it belongs to. */
+.rowzone.below .stem{bottom:calc(100% - 9px);height:54px}
 
 /* a range's two circles each drop a leg to a shared crossbar, which then
    carries a single stem up to the pill — point studies keep the plain stem.
@@ -292,7 +324,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
    instead of visibly stopping short of it. */
 .leg{position:absolute;width:2px;background:var(--lane);transform:translateX(-50%);pointer-events:none;z-index:3}
 .rowzone.above .leg{top:calc(100% + 10px);height:25px}
-.rowzone.below .leg{bottom:calc(100% + 10px);height:25px}
+.rowzone.below .leg{bottom:calc(100% + 10px);height:35px}
 .bridge{position:absolute;height:2px;background:var(--lane);pointer-events:none;z-index:3}
 .rowzone.above .bridge{top:calc(100% + 10px)}
 .rowzone.below .bridge{bottom:calc(100% + 10px)}
@@ -306,6 +338,9 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   color:var(--lane);font-weight:700;font-size:.78rem;font-family:var(--sans);
   text-align:center;cursor:pointer;
   transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
+  /* above every connector (stem/leg/bridge sit at 3) so a line always passes
+     BEHIND a label rather than across its text */
+  z-index:6;
 }
 .rowzone.above .marker{top:0}
 .rowzone.below .marker{bottom:0}
@@ -317,13 +352,24 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .marker .pv{font-family:var(--mono);font-size:.85em}
 .marker[aria-pressed="true"]{background:var(--lane);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 
-.numline .track{position:relative;z-index:2;height:10px;background:var(--lane);border-radius:5px}
+/* above the connectors (3) so the bar, its circles and its axis numbers all
+   paint in front of any line running past them — the numbers carry a
+   page-coloured knock-out (below) so a stem never strikes through a label */
+.numline .track{position:relative;z-index:4;height:10px;background:var(--lane);border-radius:5px}
+/* the dashed "scale break" mark — a pale notch cut into the bar itself,
+   showing where a lane's axis jumps from a linear run to a compressed one */
+.axis-break{
+  position:absolute;top:50%;transform:translate(-50%,-50%);z-index:4;
+  background:var(--page);border-radius:3px;padding:0 3px;
+  font-family:var(--mono);font-weight:700;font-size:.8rem;line-height:14px;
+  color:var(--lane);pointer-events:none;
+}
 .trackticks i{position:absolute;top:100%;height:7px;width:2.5px;background:var(--lane);opacity:.8;transform:translateX(-50%);pointer-events:none}
 .tracknum{position:absolute;top:100%;margin-top:8px;width:100%;height:18px}
-.tracknum span{position:absolute;white-space:nowrap;transform:translateX(-50%);font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--lane)}
+.tracknum span{position:absolute;white-space:nowrap;transform:translateX(-50%);font-family:var(--mono);font-size:.92rem;font-weight:600;color:var(--lane);background:var(--page);padding:0 3px;border-radius:2px}
 .tracknum span:first-child{transform:translateX(0)}
 .tracknum span:last-child{transform:translateX(-100%)}
-.dot{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--lane);transform:translate(-50%,-50%);box-shadow:0 0 0 2px #fff;transition:width .15s ease,height .15s ease}
+.dot{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--lane);transform:translate(-50%,-50%);box-shadow:0 0 0 2px #fff;transition:width .15s ease,height .15s ease;z-index:5}
 .dot[aria-pressed="true"]{width:19px;height:19px}
 .band{
   position:absolute;top:0;bottom:0;padding:0;border:0;border-radius:5px;
@@ -331,7 +377,10 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   transition:box-shadow .12s ease;
 }
 .band:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.band[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #fff}
+/* selection shows on the circles alone (see .dot[aria-pressed]) — the bar
+   itself stays untouched, so picking a range no longer restyles a whole
+   stretch of the line */
+.band[aria-pressed="true"]{box-shadow:none}
 .detail{
   max-height:0;opacity:0;overflow:hidden;margin-top:0;padding:0 20px;background:var(--pale);
   transition:max-height .25s ease,opacity .2s ease,margin-top .25s ease,padding-top .25s ease,padding-bottom .25s ease;
@@ -493,9 +542,35 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .fn-panel{margin:16px 0 0;max-width:65ch;font-size:.83rem;font-style:italic;line-height:1.55;color:var(--gray-text)}
 .fn-panel[hidden]{display:none}
 
+/* ---------- two-bound overlay for Aghion's interval tiles ---------- */
+/* Sits absolutely over the tile it belongs to, inset:0 within the same
+   .tile-cell (already position:relative) — opening it never changes row
+   height because it covers what's there rather than replacing it in the
+   DOM. The original tile button stays exactly as it was underneath and
+   reappears untouched when the overlay closes. */
+.tile-bounds{position:absolute;inset:0;z-index:1;display:flex;border-radius:4px;overflow:hidden}
+.tile-bounds[hidden]{display:none}
+.bound-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border:0;background:var(--navy);color:#fff;
+  cursor:pointer;padding:4px 6px;text-align:center;
+  transition:opacity .12s ease;
+}
+.bound-btn+.bound-btn{border-left:1px solid rgba(255,255,255,.35)}
+.bound-btn:hover{opacity:.85}
+.bound-btn:focus-visible{outline:2px solid #fff;outline-offset:-3px}
+/* number on top, label below — same value/tag relationship as the tile
+   itself underneath, just sized down to fit half the tile's width */
+.bound-value{font-family:var(--mono);font-size:.95rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.bound-label{font-family:var(--mono);font-size:.56rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;line-height:1.3}
+/* selected bound: same navy fill as the rest of the panel's "selected" state
+   (.tile.is-active) — the underline marks which half is picked without
+   introducing a new color */
+.bound-btn.is-active{box-shadow:inset 0 -3px 0 #fff}
+
 .tile-detail{max-width:70ch;min-height:0;opacity:0;transition:opacity .18s ease}
 .tile-detail.is-filled{margin-top:26px;padding-top:22px;min-height:7.5em;opacity:1}
-.shift-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin:0 0 18px;padding-bottom:16px}
+.shift-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin:10px 0 18px;padding-bottom:16px}
 .shift-from,.shift-arrow{font-family:var(--mono);font-size:1.5rem;color:var(--gray-text)}
 .shift-to{font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums}
 .to-low,.to-high{font-size:1em;font-weight:600}
@@ -529,7 +604,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 
 <div class="masthead">
   <div class="inner">
-    <span class="sitename">AI, Productivity &amp; Work</span>
+    <img class="site-logo" src="stone-center-logo.png" alt="Stone Center | Inequality &amp; Shaping the Future of Work">
   </div>
 </div>
 
@@ -543,41 +618,41 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 <div class="wrap">
 
   <div class="intro">
-    <span class="pill">Preliminary Draft Stone Center</span>
+    <span class="pill">Preliminary Draft Stone Center on Inequality and Shaping the Future of Work</span>
   </div>
 
-  <h2 class="headline">Acemoglu and Aghion &amp; Bunel use the same formula yet different assumptions lead to TFP estimates 10 times apart</h2>
-  <p class="standfirst">We created this tool to let you be part of the discussion. Change the inputs according to what you think is most accurate and determine TFP growth within Acemoglu and Aghion &amp; Bunel’s task based model. As AI research advances, estimates may change. Therefore, this tool is built to be updated, and we invite you to share new studies with us.</p>
+  <h2 class="headline">Acemoglu (2024) and Aghion &amp; Bunel (2024) use the same formula to forecast Total Factor Productivity (TFP) impact from AI.<br><br>A comparison of their papers shows the importance of alternative assumptions.</h2>
+  <p class="standfirst">We created this tool to let you be part of the discussion. Change the inputs according to what you think is most accurate and determine TFP growth within the tasked-based model from Acemoglu (2024). As AI research advances, estimates may change. Therefore, this tool is built to be updated, and we invite you to share new studies with us.</p>
   <p class="standfirst">We also present other models and estimates of TFP, Labor Productivity, and GDP Growth, demonstrating the vast array of opinions within this subject.</p>
 
   <section class="block">
     <p class="eyebrow">Published values</p>
-    <h3 class="sec">The two sets, side by side</h3>
+    <h3 class="sec">The Two Sets of Assumptions, Side by Side</h3>
     <table class="compare">
       <thead>
         <tr><th scope="col">Component</th><th scope="col" class="n">Acemoglu</th><th scope="col" class="n">Aghion &amp; Bunel</th><th scope="col" class="n">Ratio</th></tr>
       </thead>
       <tbody>
-        <tr><td>GDP share of exposed tasks</td><td class="n ace">20%</td><td class="n agh">60%</td><td class="n">3.0×</td></tr>
-        <tr><td>Share profitable to automate</td><td class="n ace">23%</td><td class="n agh">50%</td><td class="n">2.2×</td></tr>
-        <tr><td>Average cost savings</td><td class="n ace">27%</td><td class="n agh">40%</td><td class="n">1.5×</td></tr>
-        <tr><td>AI-exposure-adjusted labor share</td><td class="n ace">53.5%</td><td class="n agh">57%</td><td class="n">1.07×</td></tr>
-        <tr><td>Resulting TFP gain</td><td class="n ace">0.07pp/yr</td><td class="n agh">0.68pp/yr</td><td class="n">≈10×</td></tr>
+        <tr><td>GDP Share of Exposed Tasks</td><td class="n ace">20%</td><td class="n agh">60%</td><td class="n">3.0×</td></tr>
+        <tr><td>Share of Exposed Tasks That Are Profitable to Automate</td><td class="n ace">23%</td><td class="n agh">50%</td><td class="n">2.2×</td></tr>
+        <tr><td>Average Cost Savings from AI</td><td class="n ace">27%</td><td class="n agh">40%</td><td class="n">1.5×</td></tr>
+        <tr><td>AI-Exposure-Adjusted Labor Share of Value Added</td><td class="n ace">53.5%</td><td class="n agh">57%</td><td class="n">1.07×</td></tr>
+        <tr><td>Resulting TFP Gain</td><td class="n ace">0.07pp/yr</td><td class="n agh">0.68pp/yr</td><td class="n">≈10×</td></tr>
       </tbody>
     </table>
   </section>
 
   <div class="calc-head">
     <h3 class="sec">Use your own values to calculate TFP growth from AI within the next 10 years</h3>
-    <p class="lede">The dials below can be set at Acemoglu's, Aghion &amp; Bunel's, or your own values.</p>
+    <p class="lede">The dials below can be set at Acemoglu's, Aghion &amp; Bunel's, or your own preferred values.</p>
   </div>
 
   <div class="formula" aria-hidden="true">
     <span>TFP gain</span><span class="op">=</span>
-    <span class="v" id="f1">20.0%</span><span class="op">×</span>
-    <span class="v" id="f2">23.0%</span><span class="op">×</span>
-    <span class="v" id="f3">27.0%</span><span class="op">×</span>
-    <span class="v" id="f4">53.5%</span>
+    <div class="fterm"><span class="v" id="f1">20.0%</span><span class="flabel">GDP share of exposed tasks</span></div><span class="op">×</span>
+    <div class="fterm"><span class="v" id="f2">23.0%</span><span class="flabel">Share of exposed tasks profitable to automate</span></div><span class="op">×</span>
+    <div class="fterm"><span class="v" id="f3">27.0%</span><span class="flabel">Average cost savings from&nbsp;AI</span></div><span class="op">×</span>
+    <div class="fterm"><span class="v" id="f4">53.5%</span><span class="flabel">AI-exposure-adjusted labor share of Value Added</span></div>
     <span class="out">= <b id="fOut">0.66%</b></span>
   </div>
 
@@ -612,7 +687,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
             <div class="prov-card g">
               <p class="who">Aghion &amp; Bunel</p>
               <p class="val">60%</p>
-              <p>From Pizzinelli et al. (2023), who measure AI exposure by abilities. Abilities are weighted by prevalence and importance and aggregated to occupations (resulting in AIOE by occupation) and employment shares by country. The 60% is US-specific and includes both high and low complementarity employment.</p>
+              <p>From Pizzinelli et al. (2023), who measure AI exposure by abilities. Abilities are weighted by prevalence and importance and aggregated to occupations, resulting in AI occupational exposure (AIOE) by occupation and employment shares by country. The 60% is US-specific and includes both high and low complementarity employment.</p>
             </div>
           </div>
           <p class="diff"><b>Key difference</b>Acemoglu uses task exposure while Aghion &amp; Bunel uses ability exposure. Aghion &amp; Bunel flags occupations above the AIOE median as exposed to AI; Acemoglu uses each occupation's share of exposed tasks, then weights by wage bill to get a GDP share. Aghion &amp; Bunel applies no weighting, assuming the GDP share of tasks exposed to AI is similar in magnitude to the share of tasks exposed to AI (despite using abilities).</p>
@@ -622,21 +697,21 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       <section class="dial">
         <div class="dial-head">
           <div>
-            <h3>Share profitable to automate</h3>
+            <h3>Share of exposed tasks profitable to automate</h3>
             <p class="q">How many tasks are worth automating?</p>
           </div>
           <output class="readout" id="r-automatable">23.0%</output>
         </div>
         <div class="field">
           <div class="track">
-            <input type="range" id="s-automatable" min="0" max="100" step="0.5" value="23" aria-label="Share profitable to automate, percent">
+            <input type="range" id="s-automatable" min="0" max="100" step="0.5" value="23" aria-label="Share of exposed tasks profitable to automate, percent">
             <div class="scale" aria-hidden="true"><span style="left:0%">0</span><span style="left:10%">10</span><span style="left:20%">20</span><span style="left:30%">30</span><span style="left:40%">40</span><span style="left:50%">50</span><span style="left:60%">60</span><span style="left:70%">70</span><span style="left:80%">80</span><span style="left:90%">90</span><span style="left:100%">100</span></div>
             <div class="ticks">
               <button class="tick a" data-set="automatable" data-val="23" style="left:23%">Acemoglu 23%</button>
               <button class="tick g" data-set="automatable" data-val="50" style="left:50%">Aghion &amp; Bunel 50%</button>
             </div>
           </div>
-          <input type="number" class="num" id="n-automatable" min="0" max="100" step="0.1" value="23" aria-label="Share profitable to automate, percent, exact value">
+          <input type="number" class="num" id="n-automatable" min="0" max="100" step="0.1" value="23" aria-label="Share of exposed tasks profitable to automate, percent, exact value">
         </div>
         <details class="prov">
           <summary>How each economist gets there</summary>
@@ -659,7 +734,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       <section class="dial">
         <div class="dial-head">
           <div>
-            <h3>Average cost savings</h3>
+            <h3>Average cost savings from AI</h3>
             <p class="q">How much does AI save in labor costs?</p>
           </div>
           <output class="readout" id="r-savings">27.0%</output>
@@ -782,7 +857,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       <section class="dial">
         <div class="dial-head">
           <div>
-            <h3>AI-exposure-adjusted labor share</h3>
+            <h3>AI-exposure-adjusted labor share of Value Added</h3>
             <p class="q">How do labor cost savings become overall cost savings?</p>
           </div>
           <output class="readout" id="r-labshare">53.5%</output>
@@ -809,7 +884,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
             <div class="prov-card g">
               <p class="who">Aghion &amp; Bunel</p>
               <p class="val">57%</p>
-              <p>Value comes from Acemoglu's April 2024.</p>
+              <p>Value comes from Acemoglu's April 2024 Draft.</p>
             </div>
           </div>
           <p class="diff"><b>Key difference</b>No difference in methodology, Aghion &amp; Bunel uses value from Acemoglu's April draft.</p>
@@ -843,7 +918,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 
   <section class="block beyond">
     <p class="eyebrow">Beyond Acemoglu and Aghion &amp; Bunel</p>
-    <h3 class="sec">How does the rest of the field predict annual growth due to AI?</h3>
+    <h3 class="sec">How does the rest of the field estimate growth due to AI?</h3>
     <p class="lede">The two estimates above are part of a growing field of literature. Select growth metrics below to see how other studies predict AI will change the economy. We are updating this page as new studies take place.</p>
 
     <div class="segwrap">
@@ -856,17 +931,17 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 
     <div class="eq-strip" id="eqStrip" hidden>
       <div class="eq-term eq-baseline">
-        <span class="eq-label" id="eqBaselineLabel">Baseline</span>
+        <span class="eq-label" id="eqBaselineLabel">Baseline without AI</span>
         <span class="eq-value" id="eqBaseline">0.89%</span>
       </div>
       <span class="eq-op">+</span>
       <div class="eq-term eq-selected is-empty" id="eqSelectedTerm">
-        <span class="eq-label" id="eqSelectedLabel">Select an estimate</span>
+        <span class="eq-label" id="eqSelectedLabel">Select an Estimate for the Impact of AI</span>
         <span class="eq-value" id="eqSelectedValue">—</span>
       </div>
       <span class="eq-op">=</span>
       <div class="eq-term eq-total">
-        <span class="eq-label" id="eqTotalLabel">Implied annual TFP growth</span>
+        <span class="eq-label" id="eqTotalLabel">Implied US annual TFP growth</span>
         <span class="eq-value" id="eqTotal">—</span>
       </div>
     </div>
@@ -878,7 +953,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   <section class="block">
     <p class="eyebrow">Contribute</p>
     <h3 class="sec">Know an estimate we're missing?</h3>
-    <p class="lede">Send us a study and we will consider it for the number line above. Only the first two fields are required.</p>
+    <p class="lede">Send us a study, and we will consider it for the number line above. Only the first two fields are required.</p>
 
     <form id="submitForm" class="submitform" action="https://formspree.io/f/YOUR_FORM_ID" method="post">
       <div class="formgrid">
@@ -932,6 +1007,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
               <li>Gambacorta, Leonardo, Han Qiu, Shuo Shan, and Daniel M. Rees. "Generative AI and Labour Productivity: A Quasi Experiment on Coding." Journal of Financial Stability 84 (June 2026): 101543. https://doi.org/10.1016/j.jfs.2026.101543.</li>
               <li>Haslberger, Matthias, Jane Gingrich, and Jasmine Bhatia. "No Great Equalizer: Experimental Evidence on Productivity Effects of Generative AI Use in the UK Labor Market." 2023. https://doi.org/10.2139/ssrn.4594466.</li>
               <li>Karger, Ezra, Otto Kuusela, Jason Abaluck, Kevin Bryan, Basil Halperin, Todd Jones, Connacher Murphy, et al. "Forecasting the Economic Effects of AI." Federal Reserve Bank of Chicago Working Paper No. 2026-07, 2026. https://doi.org/10.21033/wp-2026-07.</li>
+              <li>Korinek, Anton, Charles I. Jones, Szymon Sacher, Tess Cotter, and Peter McCrory. "Economic Scenarios for Transformative AI." The Anthropic Institute Working Paper No. 2026-02, September 2026. https://www.anthropic.com/institute/econ-scenarios.</li>
               <li>Merali, Ali. "Scaling Laws for Economic Productivity: Experimental Evidence in LLM-Assisted Consulting, Data Analyst, and Management Tasks." arXiv:2512.21316, 2025.</li>
               <li>Noy, Shakked, and Whitney Zhang. "Experimental Evidence on the Productivity Effects of Generative Artificial Intelligence." Science 381, no. 6654 (July 14, 2023): 187–92. https://doi.org/10.1126/science.adh2586.</li>
               <li>Peng, Sida, Eirini Kalliamvakou, Peter Cihon, and Mert Demirer. "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot." arXiv:2302.06590 [cs.SE], 2023. https://arxiv.org/abs/2302.06590.</li>
@@ -1113,9 +1189,15 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   var LANES=[
     {id:"tfp",name:"Total Factor Productivity",unit:"percentage points per year",color:"#2054B3",tint:"#E0E7F4",max:0.8,step:0.2,
      def:"The efficiency residual left over once labor and capital are accounted for — not a directly observed quantity."},
-    {id:"lab",name:"Labor Productivity",unit:"percentage points per year",color:"#405731",tint:"#E4E7E2",max:2.5,step:0.5,
+    {id:"lab",name:"Labor Productivity",unit:"percentage points per year",color:"#405731",tint:"#E4E7E2",max:2,step:0.5,
      def:"Output per hour worked — includes capital deepening, unlike TFP."},
-    {id:"gdp",name:"GDP Growth",unit:"percentage points per year",color:"#C60615",tint:"#F7DCDE",max:1.0,step:0.2,
+    // Additive: breakPoint/breakPct/customAxis give this one lane a broken
+    // scale — linear from 0 to breakPoint (occupying 0–breakPct% of the
+    // track), then a compressed jump straight to max (breakPct–100%), with
+    // a dashed break glyph marking the seam. Every other lane leaves these
+    // unset, so pct() below falls back to its original single-scale math.
+    {id:"gdp",name:"GDP Growth",unit:"percentage points per year",color:"#C60615",tint:"#F7DCDE",
+     max:7,breakPoint:2,breakPct:78,customAxis:[0,0.5,1,1.5,2,7],pillGap:24,
      def:"The economy's total output growth — the broadest of the three, and the furthest from any single mechanism."}
   ];
   var STUDIES=[
@@ -1147,8 +1229,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     // it; see updateEquation().
     {id:"bls-tfp",lane:"tfp",name:"BLS Actual, 2000–2025",type:"point",value:0.89,display:"≈0.89",
      role:"baseline",baselineDisplay:"0.89%",
-     baselineLabel:"Baseline",
-     totalLabel:"Implied annual TFP growth",
+     baselineLabel:"Baseline without AI",
+     totalLabel:"Implied US annual TFP growth",
      note:'Baseline is weighted average calculated from <a href="https://www.bls.gov/news.release/archives/prod3_03192026.pdf" target="_blank" rel="noopener noreferrer">2026 BLS News Release Table A</a>.',
      headline:"0.89pp per year, actual, 2000–2025",
      cite:"Bureau of Labor Statistics, Total Factor Productivity, private nonfarm business sector, 2000–2025.",
@@ -1159,6 +1241,15 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      cite:"Generative AI and the future of work in America, Ellingrud et al. (2023).",
      link:"https://www.mckinsey.com/mgi/our-research/generative-ai-and-the-future-of-work-in-america",
      body:"Find that “generative AI has the potential to increase US labor productivity by 0.5 to 0.9 percentage points annually through 2030 in a midpoint adoption scenario.” Researchers use O*NET activities and match each to one or more of 18 technological capabilities to assess what AI could do, then screen for what's feasible solution development timelines, the economics of automating versus paying wages, and time to adopt. Freed labor is assumed to rejoin the workforce, and the range comes from whether it rejoins at 2022 or 2030 productivity levels.</p><p class=\"dbody\">Furthermore, researchers find that combining generative AI with other automation technologies could make potential productivity growth to 3 to 4 percent annually in a midpoint adoption scenario."},
+    // Additive: overlaps McKinsey above the line and sits fully inside OECD's
+    // range below it, so it needs a tier of its own — tier:2 (checked only in
+    // renderMarker/CSS below, see .marker.tier-2) lifts its bracket clear of
+    // McKinsey's with a taller stem, rather than sharing McKinsey's row.
+    {id:"aghion-lab",lane:"lab",name:"Aghion &amp; Bunel",type:"range",lo:0.8,hi:1.3,
+     headline:"0.8–1.3pp per year",
+     cite:"AI and Growth: Where Do We Stand?, Aghion &amp; Bunel (2024).",
+     link:"https://www.frbsf.org/wp-content/uploads/AI-and-Growth-Aghion-Bunel.pdf",
+     body:"Aghion &amp; Bunel take the labor productivity growth rates seen in the electricity wave in Europe and the digital technology wave in the US to estimate AI increasing labor productivity by 0.8 to 1.3 percentage points per year. Note: Aghion &amp; Bunel use the term \"aggregate productivity,\" but the underlying series they derive the figures from are labor productivity, so we place it here."},
     {id:"oecd-lab",lane:"lab",name:"OECD",type:"range",lo:0.4,hi:1.3,
      headline:"0.4–1.3pp annually in the US",
      cite:"“Macroeconomic productivity gains from Artificial Intelligence in G7 economies”, Filippucci, Gal, Laengle &amp; Schief (2025).",
@@ -1181,8 +1272,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      body:"Over the next 10 years, they predict that current generation AI models could increase annual US labor productivity growth by 1.8 pp.</p><p class=\"dbody\">They use Claude to determine how much time it takes to complete tasks with and without AI and extrapolate to the entire economy."},
     {id:"bls-lab",lane:"lab",name:"BLS Actual, 2000–2025",type:"point",value:2,display:"≈2.0",
      role:"baseline",baselineDisplay:"2.0%",
-     baselineLabel:"Baseline",
-     totalLabel:"Implied annual labor productivity growth",
+     baselineLabel:"Baseline without AI",
+     totalLabel:"Implied US annual labor productivity growth",
      note:'Baseline is weighted average calculated from <a href="https://www.bls.gov/news.release/archives/prod3_03192026.pdf" target="_blank" rel="noopener noreferrer">2026 BLS News Release Table A</a>.',
      headline:"2.0pp per year, actual, 2000–2025",
      cite:"Bureau of Labor Statistics, Labor Productivity, nonfarm business sector, 2000–2025.",
@@ -1198,12 +1289,31 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      cite:"Revised longer-run forecasts, Briggs &amp; Kodnani (2023).",
      link:"https://www.gspublishing.com/content/research/en/reports/2023/10/30/2d567ebf-0e7d-4769-8f01-7c62e894a779.html",
      body:"Analysts use a forecast model to predict that AI will contribute 0.4 pp to US GDP in the second half of their 10 year forecast horizon (up to 2034)."},
+    // Additive: three new GDP-lane point studies. Each value is the mean of
+    // that scenario's own four annual (2027–2030) percentage-point figures
+    // from Anthropic's Economic Scenario Explorer — a four-year average
+    // rather than the ten-year horizon the rest of this lane otherwise uses.
+    {id:"korinek-modest",lane:"gdp",name:"Korinek et. al<br>Modest Change",type:"point",value:0.28,display:"0.28",
+     headline:"0.2pp 2027 / 0.2pp 2028 / 0.3pp 2029 / 0.4pp 2030",
+     cite:"Economic Scenarios for Transformative AI, Korinek et al. (2026).",
+     link:"https://www.anthropic.com/institute/econ-scenarios",
+     body:"The modest change scenario represents a world in which AI has about \"roughly the same kind of impact as the internet did.\" Their website presents 2027-2030's growth rates in the \"Modest Change Scenario\" where values are 0.2, 0.2, 0.3, and 0.4 percentage points above yearly GDP growth rate. We take the mean of those four years; this is our own calculation, over a four-year rather than a ten-year horizon."},
+    {id:"korinek-substantial",lane:"gdp",name:"Korinek et. al<br>Substantial Change",type:"point",value:1.85,display:"1.85",
+     headline:"0.7pp 2027 / 1.2pp 2028 / 2.1pp 2029 / 3.4pp 2030",
+     cite:"Economic Scenarios for Transformative AI, Korinek et al. (2026).",
+     link:"https://www.anthropic.com/institute/econ-scenarios",
+     body:"The substantial change scenario represents a world in which AI \"half of all knowledge work by 2030\". Their website presents 2027-2030's growth rates in the \"Substantial Change Scenario\" where values are 0.7, 1.2, 2.1, and 3.4 percentage points above yearly GDP growth rate. We take the mean of those four years; this is our own calculation, over a four-year rather than a ten-year horizon."},
+    {id:"korinek-extreme",lane:"gdp",name:"Korinek et. al<br>Extreme Change",type:"point",value:6.85,display:"6.85",
+     headline:"1.6pp 2027 / 4.0pp 2028 / 8.4pp 2029 / 13.4pp 2030",
+     cite:"Economic Scenarios for Transformative AI, Korinek et al. (2026).",
+     link:"https://www.anthropic.com/institute/econ-scenarios",
+     body:"The extreme change scenario represents a world in which AI is \"more productive than humans at the vast majority of knowledge-work tasks.\" Their website presents 2027-2030's growth rates in the \"Extreme Change Scenario\" where values are 1.6, 4.0, 8.4, and 13.4 percentage points above yearly GDP growth rate. We take the mean of those four years; this is our own calculation, over a four-year rather than a ten-year horizon."},
     // The GDP lane's realized baseline. Unlike the other two lanes this one is
     // World Bank rather than BLS, so it carries its own source line.
     {id:"wb-gdp",lane:"gdp",name:"World Bank Actual, United States",type:"point",value:2.22,
      role:"baseline",baselineDisplay:"2.22%",
-     baselineLabel:"Baseline",
-     totalLabel:"Implied annual GDP growth",
+     baselineLabel:"Baseline without AI",
+     totalLabel:"Implied US annual GDP growth",
      note:'Baseline is average calculated from <a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG?end=2025&amp;locations=US&amp;start=1961&amp;view=chart" target="_blank" rel="noopener noreferrer">World Bank GDP growth (annual %) - United States</a>.'}
   ];
   var NOFIG=[
@@ -1256,12 +1366,28 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   // only a year is on record.
   function dateVal(n){return n.year+((n.month?n.month-0.5:6)/12);}
   var YEAR_MIN=Math.min.apply(null,NOFIG.map(function(n){return n.year;}));
-  var YEAR_MAX=Math.max(2027,Math.max.apply(null,NOFIG.map(function(n){return n.year;})));
+  // Padded half a year past the latest entry's year (not just to it) — the
+  // 2026 entries cluster tightly enough (April/May, some on the very same
+  // month) that the axis needs real room past them for the wider pill-nudge
+  // pass below to spread pills apart without running off the right edge.
+  var YEAR_MAX=Math.max(2027.5,Math.max.apply(null,NOFIG.map(function(n){return n.year;}))+0.5);
   var YEAR_AXIS=[];
   for(var _y=YEAR_MIN;_y<=YEAR_MAX;_y++)YEAR_AXIS.push(_y);
   function yearPct(v){return YEAR_MAX>YEAR_MIN?Math.max(0,Math.min(100,(v-YEAR_MIN)/(YEAR_MAX-YEAR_MIN)*100)):50;}
 
-  function pct(v){return Math.max(0,Math.min(100,v/MAX*100));}
+  // Additive: BREAK is set only while the active lane declares a broken
+  // scale (see LANES.gdp above) — null for every other lane, in which case
+  // this collapses right back to the original single-scale line below.
+  var BREAK=null;
+  function pct(v){
+    if(BREAK){
+      if(v<=BREAK.value)return Math.max(0,Math.min(BREAK.pct,v/BREAK.value*BREAK.pct));
+      var span=MAX-BREAK.value;
+      var frac=span>0?(v-BREAK.value)/span:0;
+      return Math.max(BREAK.pct,Math.min(100,BREAK.pct+frac*(100-BREAK.pct)));
+    }
+    return Math.max(0,Math.min(100,v/MAX*100));
+  }
   function edgeTx(p){return p<8?"0%":(p>92?"-100%":"-50%");}
   function fnum(n){return (Math.round(n*100)/100).toString();}
 
@@ -1304,11 +1430,18 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   // grey out. "Other works" rides the same control but has no numeric lane —
   // selecting it repoints the line at NOFIG instead (see renderNumline).
   var METRICS=LANES.map(function(l){return {id:l.id,name:l.name,color:l.color,tint:l.tint};})
-    .concat([{id:"nofig",name:"Other Measures of Growth",color:"#EF5D00",tint:"#FDE8DB",
-      def:"Other frameworks and extensions shown here by publication year, oldest to newest, instead of by size."}]);
+    .concat([{id:"nofig",name:"Other Expert Views on Growth",color:"#EF5D00",tint:"#FDE8DB",
+      def:"Other frameworks and extensions shown here by publication year, oldest to newest."}]);
 
   function renderMarker(s,dotPct){
-    var p=pct(anchor(s));
+    // Additive: a point-type pill now follows its nudged dot position when
+    // one exists (dotPct[s.id] is only ever set for points — ranges key
+    // their two ends as s.id+"-lo"/"-hi" instead, so this leaves a range's
+    // own pill exactly where it always sat, at the true midpoint). Without
+    // this, nudging dotPct only moved the small dot, never the pill sitting
+    // above/below it — leaving the pill free to overlap its neighbor even
+    // when the dot spacing looked fine.
+    var p=(dotPct&&dotPct[s.id]!=null)?dotPct[s.id]:pct(anchor(s));
     var label=s.type==="range"?(fnum(s.lo)+"–"+fnum(s.hi)):s.display;
     var below,stem;
     if(s.type==="range"){
@@ -1319,18 +1452,21 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       below='<i class="leg" aria-hidden="true" style="left:'+lo+'%"></i>'+
         '<i class="leg" aria-hidden="true" style="left:'+hi+'%"></i>'+
         '<i class="bridge" aria-hidden="true" style="left:'+lo+'%;width:'+(hi-lo)+'%"></i>';
-      stem='<i class="stem" aria-hidden="true" style="left:'+p+'%;height:19px"></i>';
+      // Additive: a tier-2 range's stem has much further to reach — from its
+      // own (elevated) pill down to the same crossbar height every range in
+      // this zone shares — so it gets an explicit top+height instead of the
+      // plain fixed-height stem every other range uses.
+      stem=s.tier===2?
+        '<i class="stem" aria-hidden="true" style="left:'+p+'%;top:34px;height:106px"></i>':
+        '<i class="stem" aria-hidden="true" style="left:'+p+'%;height:19px"></i>';
     }else{
       below="";
       stem='<i class="stem" aria-hidden="true" style="left:'+p+'%"></i>';
     }
-    // stem is drawn AFTER the button so it paints in front, overlapping
-    // a few px into the pill's bottom padding — anything drawn behind an
-    // opaque button is invisible, so this is the only way the line
-    // actually looks like it reaches into the pill rather than stopping
-    // dead at its edge.
+    // The stem runs a few px into the pill's padding so the join never shows
+    // a hairline gap; the pill paints over that overlap (see .marker z-index).
     return below+
-      '<button type="button" class="marker" data-id="'+s.id+'" aria-pressed="false" style="left:'+p+'%;--tx:'+edgeTx(p)+'"><span class="pname">'+s.name+'</span><span class="pv">'+label+'%</span></button>'+
+      '<button type="button" class="marker'+(s.tier===2?" tier-2":"")+'" data-id="'+s.id+'" aria-pressed="false" style="left:'+p+'%;--tx:'+edgeTx(p)+'"><span class="pname">'+s.name+'</span><span class="pv">'+label+'%</span></button>'+
       stem;
   }
 
@@ -1394,6 +1530,9 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   function renderNumline(){
     var host=document.getElementById("numline");
     if(!host)return;
+    // Additive: cleared on every render so a previous GDP-lane visit never
+    // leaks its broken scale into whichever lane renders next.
+    BREAK=null;
     if(!activeMetric){
       MAX=2.0;AXIS=buildAxis(MAX);
       host.style.setProperty("--lane","var(--gray-line)");
@@ -1406,10 +1545,13 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       host.style.setProperty("--lane-tint","#FDE8DB");
       var items=NOFIG.slice().sort(function(a,b){return dateVal(a)-dateVal(b);});
       // Same cascading min-gap nudge as the pp/year lanes' DOT_GAP (see
-      // above): two NOFIG entries published close enough in time — e.g. a
-      // month apart — would otherwise land on top of each other here, since
-      // nothing else was spreading their dots apart on this axis.
-      var YEAR_DOT_GAP=3.5;
+      // above), but wider: this axis's pills carry a name and a year (much
+      // wider than a bare number), so a gap tuned for keeping small dots
+      // apart isn't enough to keep same-side PILLS from overlapping once
+      // three or more entries land within a few weeks of each other — this
+      // matches splitSides' own MIN_GAP below, which is what decides above
+      // vs. below in the first place.
+      var YEAR_DOT_GAP=9;
       var yearDotSpecs=items.map(function(it){return {key:it.id,pct:yearPct(dateVal(it))};})
         .sort(function(a,b){return a.pct-b.pct;});
       for(var ydi=1;ydi<yearDotSpecs.length;ydi++){
@@ -1424,10 +1566,17 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       nhtml+="</div>";
       nhtml+='<div class="rowzone below">'+nsides.below.map(function(it){return renderYearMarker(it,yearDotPct);}).join("")+"</div>";
       host.innerHTML=nhtml;
+      // this lane's pills are the widest of any (a name AND a year), so it
+      // needs the same post-render stacking pass as the numeric lanes
+      fixPillCollisions(host);
       return;
     }
     var lane=LANES.filter(function(l){return l.id===activeMetric;})[0];
-    MAX=lane.max||2.0;AXIS=buildAxis(MAX,lane.step);
+    MAX=lane.max||2.0;
+    AXIS=lane.customAxis||buildAxis(MAX,lane.step);
+    // Additive: only the GDP lane declares breakPoint/breakPct, so this is
+    // the one place BREAK ever gets set — pct() picks it up automatically.
+    BREAK=lane.breakPoint!=null?{value:lane.breakPoint,pct:lane.breakPct}:null;
     host.style.setProperty("--lane",lane.color);
     host.style.setProperty("--lane-tint",lane.tint);
     // role:"baseline" entries never reach the axis — they are levels, not
@@ -1456,10 +1605,31 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     }
     var dotPct={};
     sortedDots.forEach(function(d){dotPct[d.key]=d.pct;});
-    var sides=splitSides(studies,function(s){return pct(anchor(s));},function(s){return s.type==="range"||s.id==="goldman-mar"||s.id==="yotzov";},function(s){return s.id==="oecd-lab";}),above=sides.above,below=sides.below;
-    var belowPcts=below.map(function(s){return pct(anchor(s));});
-    var html='<div class="rowzone above">'+above.map(function(s){return renderMarker(s,dotPct);}).join("")+"</div>";
+    // goldman-nov pinned below: adding the three Korinek GDP studies shifted
+    // where it falls in the sorted list, and its default alternation now
+    // lands it on the same side as (and close enough to overlap) acemoglu-gdp.
+    // goldman-mar (lab) repositioned below the line — at 1.5 it sits clear
+    // of OECD's right arm (1.3), and this frees its old "above" spot for
+    // aghion-lab's own bracket now sharing that side with McKinsey.
+    var sides=splitSides(studies,function(s){return pct(anchor(s));},function(s){return s.type==="range"||s.id==="yotzov";},function(s){return s.id==="oecd-lab"||s.id==="mckinsey"||s.id==="goldman-nov"||s.id==="goldman-mar";}),above=sides.above,below=sides.below;
+    // Note: pill-vs-pill label crowding for lanes that opt in via
+    // pill crowding is handled AFTER render, in fixPillCollisions()
+    // below — that pass corrects the real rendered pixels without ever
+    // moving a dot off its true value. This is the only pass that runs;
+    // an earlier percentage-based version lived here and has been removed
+    // rather than left to double up with it (it was reaching dotPct itself,
+    // which the pixel pass now deliberately leaves alone).
+    var belowPcts=below.map(function(s){return dotPct[s.id]!=null?dotPct[s.id]:pct(anchor(s));});
+    // Additive: only the "above" zone ever needs the taller has-tier2 box —
+    // aghion-lab is the only study using tier:2, and it's pinned mustAbove
+    // along with every other range, so it always lands in this zone specifically.
+    var hasTier2=above.some(function(s){return s.tier===2;});
+    var html='<div class="rowzone above'+(hasTier2?" has-tier2":"")+'">'+above.map(function(s){return renderMarker(s,dotPct);}).join("")+"</div>";
     html+='<div class="track">'+trackScaffold(AXIS,pct,fnum,belowPcts);
+    // Additive: the dashed "scale break" glyph — only ever rendered when the
+    // active lane declared one (GDP), marking the seam between the linear
+    // 0–breakPoint run and the compressed jump on to max.
+    if(BREAK)html+='<span class="axis-break" aria-hidden="true" style="left:'+BREAK.pct+'%">⁄⁄</span>';
     studies.forEach(function(s){
       if(s.type==="range"){
         var lo=pct(s.lo),hi=pct(s.hi);
@@ -1473,6 +1643,126 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     html+="</div>";
     html+='<div class="rowzone below">'+below.map(function(s){return renderMarker(s,dotPct);}).join("")+"</div>";
     host.innerHTML=html;
+    // A percentage-based gap can never be robust, because a pill's real pixel
+    // width comes from its text, not from the track's width — the same gap
+    // that clears two pills at a wide viewport shrinks to nothing once the
+    // track narrows. This runs AFTER the DOM above is inserted and measures
+    // what is actually on screen, so it is correct at any width. It self-
+    // guards to a no-op when nothing overlaps, hence no per-lane opt-in.
+    // Re-run on resize (see below) for the same reason.
+    fixPillCollisions(host);
+  }
+
+  // Additive: resolves pill-label crowding by STACKING rather than sliding.
+  // A pill that would collide with its neighbour drops to a second row
+  // directly away from the track, so its stem stays perfectly vertical over
+  // its own dot. The earlier version slid the pill sideways and drew an
+  // elbow back to the dot; that put a label where its dot isn't and dragged
+  // a horizontal bridge straight across the axis numbers. Stacking never
+  // misplaces a label and never crosses anything.
+  //
+  // Deliberately conservative: a zone is left exactly as rendered unless its
+  // pills genuinely overlap at the current width, and zones laid out by the
+  // fixed .has-tier2 rules or containing a range's leg/bridge scaffolding
+  // are skipped outright rather than have a second scheme stacked on them.
+  function fixPillCollisions(host){
+    var trackEl=host.querySelector(".track");
+    if(!trackEl)return;
+    var trackRect=trackEl.getBoundingClientRect();
+    if(!trackRect.width)return;
+    var GAP_X=10,GAP_Y=8;
+    [".rowzone.above",".rowzone.below"].forEach(function(sel){
+      var zone=host.querySelector(sel);
+      if(!zone||zone.classList.contains("has-tier2"))return;
+      var above=sel.indexOf("above")>-1;
+      var markers=Array.prototype.slice.call(zone.querySelectorAll(".marker"));
+      if(markers.length<2)return;
+      // A range occupies far more width than its pill: its crossbar spans the
+      // whole interval. Two brackets whose bars overlap render as one merged
+      // line even when their pills sit clear of each other, so a marker's
+      // footprint here is the union of its pill and its crossbar.
+      function extent(m){
+        var r=m.getBoundingClientRect(),l=r.left,rt=r.right,br=scaffold(m).bridge;
+        if(br){var b=br.getBoundingClientRect();l=Math.min(l,b.left);rt=Math.max(rt,b.right);}
+        return {l:l,r:rt};
+      }
+      var byLeft=markers.slice().sort(function(a,b){return extent(a).l-extent(b).l;});
+      var overlaps=byLeft.some(function(m,i){
+        return i&&extent(m).l<extent(byLeft[i-1]).r+GAP_X;
+      });
+      if(!overlaps)return;
+      var rowH=0;
+      markers.forEach(function(m){rowH=Math.max(rowH,m.getBoundingClientRect().height);});
+      // Narrowest first, so each marker claims the innermost row it fits in
+      // and anything wider is pushed outward around it. For two nested
+      // intervals that means the contained one (McKinsey, 0.5–0.9) keeps the
+      // row against the bar and the containing one (OECD, 0.4–1.3) arcs
+      // outside it — brackets that read as nested rather than as one merged
+      // line. Ties break left-to-right so equal-width pills stay in reading
+      // order.
+      markers.sort(function(a,b){
+        var ea=extent(a),eb=extent(b);
+        return ((ea.r-ea.l)-(eb.r-eb.l))||(ea.l-eb.l);
+      });
+      var rows=[],maxRow=0;
+      markers.forEach(function(m){
+        var e=extent(m),row=0;
+        while(rows[row]&&rows[row].some(function(o){return e.l<o.r+GAP_X&&o.l<e.r+GAP_X;}))row++;
+        (rows[row]=rows[row]||[]).push(e);
+        if(row>maxRow)maxRow=row;
+        // anchor every pill by its track-facing edge so all row-0 pills line
+        // up at one distance from the bar (taller ones grow away from it,
+        // not toward it) and each extra row is a clean fixed step further out
+        var off=row*(rowH+GAP_Y);
+        m.style[above?"top":"bottom"]="auto";
+        m.style[above?"bottom":"top"]=off+"px";
+      });
+      zone.style.height=(rowH+maxRow*(rowH+GAP_Y))+"px";
+    });
+    // Zone heights just changed, which moves the track — so every connector
+    // is sized against freshly measured geometry, not the pre-stack layout.
+    var newTrack=trackEl.getBoundingClientRect();
+    var dotCenterY=newTrack.top+newTrack.height/2;
+    [".rowzone.above",".rowzone.below"].forEach(function(sel){
+      var zone=host.querySelector(sel);
+      if(!zone||!zone.style.height)return;
+      var above=sel.indexOf("above")>-1,zoneTop=zone.getBoundingClientRect().top;
+      function place(el,fromY,toY){
+        el.style.bottom="auto";
+        el.style.top=(Math.min(fromY,toY)-zoneTop)+"px";
+        el.style.height=Math.abs(toY-fromY)+"px";
+      }
+      Array.prototype.forEach.call(zone.querySelectorAll(".marker"),function(m){
+        var sc=scaffold(m),r=m.getBoundingClientRect();
+        if(!sc.stem)return;
+        // the pill's track-facing edge; connectors meet it 9px in so the
+        // join reads as continuous under the label
+        var pillEdge=above?r.bottom:r.top;
+        if(sc.bridge){
+          // range: pill → stem → crossbar → one leg down to each dot
+          var bridgeY=above?pillEdge+10:pillEdge-10;
+          sc.bridge.style.bottom="auto";
+          sc.bridge.style.top=(bridgeY-zoneTop)+"px";
+          place(sc.stem,above?pillEdge-9:pillEdge+9,bridgeY);
+          sc.legs.forEach(function(lg){place(lg,bridgeY,dotCenterY);});
+        }else{
+          place(sc.stem,above?pillEdge-9:pillEdge+9,dotCenterY);
+        }
+      });
+    });
+  }
+
+  // A marker's connectors, by DOM position: renderMarker emits any legs and
+  // crossbar before the button and the stem straight after it.
+  function scaffold(m){
+    var out={stem:null,bridge:null,legs:[]},n=m.nextElementSibling;
+    if(n&&n.classList.contains("stem"))out.stem=n;
+    for(var p=m.previousElementSibling;p;p=p.previousElementSibling){
+      if(p.classList.contains("bridge"))out.bridge=p;
+      else if(p.classList.contains("leg"))out.legs.push(p);
+      else break;
+    }
+    return out;
   }
 
   function renderDetail(id){
@@ -1535,7 +1825,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
     var term=eqEl("eqSelectedTerm");
     if(!estimate){
       term.classList.add("is-empty");
-      eqEl("eqSelectedLabel").innerHTML="Select an estimate";
+      eqEl("eqSelectedLabel").innerHTML="Select an Estimate for the Impact of AI";
       eqSet(eqEl("eqSelectedValue"),"—");
       eqSet(eqEl("eqTotal"),"—");
       return;
@@ -1623,6 +1913,24 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   window.addEventListener("resize",function(){
     var activeBtn=document.querySelector(".mtab.active");
     if(activeBtn)moveSegPill(activeBtn);
+    // Additive: re-render on resize too, not just reposition the tab pill —
+    // a pixel-based pill-collision fix (see fixPillCollisions above)
+    // only stays correct if it re-measures after the track's width actually
+    // changes, and a full renderNumline() is the simplest way to get that
+    // for free alongside everything else that already depends on width.
+    if(activeMetric){
+      renderNumline();
+      // renderNumline() always rebuilds markers as aria-pressed="false" —
+      // selectStudy() is what actually applies the pressed/highlighted look
+      // afterward, so a plain re-render would otherwise leave a still-open
+      // detail card with no pill visibly marked as its source. Re-apply the
+      // existing selection (if any) the same way selectStudy() itself does.
+      if(selected){
+        Array.prototype.forEach.call(document.querySelectorAll("#numline [data-id]"),function(el){
+          el.setAttribute("aria-pressed",el.dataset.id===selected?"true":"false");
+        });
+      }
+    }
   });
 })();
 
@@ -1640,15 +1948,15 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       label:"Acemoglu's variants",
       unit:"",
       sublabel:"",
-      anchor:{value:0.66,display:"0.66%",note:"Baseline"},
+      anchor:{value:0.66,display:"0.66%",note:"Baseline over 10 Years"},
       items:[
-        {value:"0.66%",result:0.66,isAnchor:true,tag:"Baseline",
+        {value:"0.66%",result:0.66,isAnchor:true,tag:"Baseline over 10 Years",
          body:"4.6% of GDP impacted times 14.4% overall cost savings. Acemoglu calls this an upper bound."},
-        {value:"0.89%",result:0.89,tag:"Including Peng et al.",
+        {value:"0.89%",result:0.89,tag:"Just including Peng et. al",
          body:"Adding Peng et al. (2023) who observe bigger productivity gains to average cost savings."},
-        {value:"0.90%",result:0.90,tag:"Including Cost Decline Scenarios",
+        {value:"0.90%",result:0.90,tag:"Just including Cost Decline Scenarios",
          body:"Using Svanberg et al.'s cost decline scenario in which computer vision costs decline at a rate of 10% per year, the fraction of feasibly automated tasks can increase to 30%. This result raises GDP share impacted by AI thus raising TFP gains over the next 10 years."},
-        {value:"0.53%",result:0.53,tag:"Hard-to-Learn Tasks",
+        {value:"0.53%",result:0.53,tag:"Considering Hard To Learn Tasks",
          body:"By recognizing the slower productivity gains from hard tasks exposed to AI, TFP growth drops."}
       ]
     },
@@ -1657,7 +1965,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       label:"Aghion &amp; Bunel's input intervals",
       unit:"",
       sublabel:"",
-      anchor:{value:6.8,display:"6.8%",note:"Median interval",
+      anchor:{value:6.8,display:"6.8%",note:"Median Estimate",
         footnote:"Published as 0.68 percentage points of additional annual TFP growth. Converted here to a ten-year cumulative figure."},
       // lowResult/highResult are the cumulative ten-year TFP outcome when that
       // one parameter is moved to each end of its range with the other three
@@ -1666,11 +1974,30 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       // row, so the panel is correct while incomplete rather than invented.
       items:[
         {value:"18.5–68%",lowResult:null,highResult:null,tag:"Share of GDP exposed",
-         body:"Lower bound comes from Gmyrek et. al (2023) who find 18.5% of exposed tasks from advanced countries and Higher bound comes from Pizzinelli et al. (2023) who find 68% of exposed abilities in the UK."},
-        {value:"23–80%",lowResult:null,highResult:null,tag:"Share profitable to automate",
-         body:"The lower bound comes from Svanberg et. al’s headline figure while the higher bound considers a 50% annual cost reduction scenario based on changing GPU computing power. A 50% cost reduction scenario via Svanberg et al.’s estimates results in 80% of tasks being profitable to automate within 10 years."},
-        {value:"27–40%",lowResult:null,highResult:null,tag:"Average cost savings",
-         body:"Lower bound comes from Acemoglu’s average of Noy and Zhang (2023) and Brynjolfsson et al. (2023), while the upper bound includes Peng et al. (2023) and uses Brynjolfsson et al. (2023)’s productivity estimates for the second and third months."}
+         body:"Lower bound comes from Gmyrek et. al (2023) who find 18.5% of exposed tasks from advanced countries and Higher bound comes from Pizzinelli et al. (2023) who find 68% of exposed abilities in the UK.",
+         // Additive: powers the two-bound interaction (see tileHTML/click
+         // handler below). Each value is the cumulative-ten-year TFP result
+         // of holding the OTHER three inputs at Aghion & Bunel's own central
+         // values (60% / 50% / 40%, labor share 57% — the same figures used
+         // as the "Aghion & Bunel" tick marks on the dials above, whose
+         // product is exactly this group's anchor, 6.8%) and moving just
+         // this one input to the stated end of its published range.
+         boundLo:{label:"Lower bound",input:"18.5%",value:(18.5/100)*(50/100)*(40/100)*(57/100)*100,
+           caption:"Lower bound comes from Gmyrek et. al (2023) who find 18.5% of exposed tasks from advanced countries."},
+         boundHi:{label:"Higher bound",input:"68%",value:(68/100)*(50/100)*(40/100)*(57/100)*100,
+           caption:"Higher bound comes from Pizzinelli et al. (2023) who find 68% of exposed abilities in the UK."}},
+        {value:"23–80%",lowResult:null,highResult:null,tag:"Share of exposed tasks profitable to automate",
+         body:"The lower bound comes from Svanberg et. al’s headline figure while the higher bound considers a 50% annual cost reduction scenario based on changing GPU computing power. A 50% cost reduction scenario via Svanberg et al.’s estimates results in 80% of tasks being profitable to automate within 10 years.",
+         boundLo:{label:"Lower bound",input:"23%",value:(60/100)*(23/100)*(40/100)*(57/100)*100,
+           caption:"The lower bound comes from Svanberg et. al’s headline figure while the higher bound considers a 50% annual cost reduction scenario based on changing GPU computing power."},
+         boundHi:{label:"Higher bound",input:"80%",value:(60/100)*(80/100)*(40/100)*(57/100)*100,
+           caption:"A 50% cost reduction scenario via Svanberg et al.’s estimates results in 80% of tasks being profitable to automate within 10 years."}},
+        {value:"27–40%",lowResult:null,highResult:null,tag:"Average cost savings from AI",
+         body:"Lower bound comes from Acemoglu’s average of Noy and Zhang (2023) and Brynjolfsson et al. (2023), while the upper bound includes Peng et al. (2023) and uses Brynjolfsson et al. (2023)’s productivity estimates for the second and third months.",
+         boundLo:{label:"Lower bound",input:"27%",value:(60/100)*(50/100)*(27/100)*(57/100)*100,
+           caption:"Lower bound comes from Acemoglu's average of Noy and Zhang (2023) and Brynjolfsson et al. (2023)."},
+         boundHi:{label:"Higher bound",input:"40%",value:(60/100)*(50/100)*(40/100)*(57/100)*100,
+           caption:"The upper bound includes Peng et al. (2023) and uses Brynjolfsson et al. (2023)'s productivity estimates for the second and third months."}}
       ]
     }
   };
@@ -1720,11 +2047,29 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
           '</div>';
       }
       // no caption row — the tag under the value already names each tile
+      // Additive: an item carrying boundLo/boundHi (Aghion's three interval
+      // tiles) also gets a hidden two-button overlay sibling — a <button>
+      // can't nest other buttons (see the .fn-marker comment above), so the
+      // overlay sits alongside the original tile rather than inside it, and
+      // is positioned in CSS to cover that same tile's footprint when shown.
+      // The original tile button is untouched either way, hidden state or not.
+      function boundBtnHTML(b,which){
+        return '<button type="button" class="bound-btn" data-idx="'+idx+'" data-bound="'+which+'" aria-pressed="false">'+
+          '<span class="bound-value">'+b.input+'</span>'+
+          '<span class="bound-label">'+b.label+'</span>'+
+        '</button>';
+      }
+      var boundsOverlay=(it.boundLo&&it.boundHi)?
+        '<div class="tile-bounds" hidden>'+
+          boundBtnHTML(it.boundLo,"lo")+
+          boundBtnHTML(it.boundHi,"hi")+
+        '</div>':"";
       return '<div class="tile-cell">'+
-        '<button type="button" class="tile" data-idx="'+idx+'" aria-pressed="false">'+
+        '<button type="button" class="tile" data-idx="'+idx+'" aria-pressed="false"'+(boundsOverlay?' aria-expanded="false"':"")+'>'+
           '<span class="tile-value">'+it.value+'</span>'+
           '<span class="tile-tag">'+it.tag+'</span>'+
         '</button>'+
+        boundsOverlay+
         '</div>';
     }
     function groupHTML(key,g){
@@ -1760,7 +2105,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
           "</div>";
       }
       if((single||ranged)&&g.kind==="parameter"){
-        html+='<p class="shift-caption">Moving <em>'+it.tag+'</em> across its full range with the other three parameters held at their central values.</p>';
+        html+='<p class="shift-caption">Moving <em>'+it.tag+'</em> across its full range with the other three parameters held at their original baseline values.</p>';
       }
       return html+'<p class="tile-body">'+it.body+"</p>";
     }
@@ -1793,6 +2138,19 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       return groupHTML(k,CONSIDERATIONS[k]);
     }).join("");
 
+    // Additive: closes any open two-bound overlay in a row and restores its
+    // tile to the plain, unopened state — shared by "open a different tile"
+    // and "close this tile" so both leave the row in the same clean state.
+    function closeBoundsOverlay(t){
+      var cell=t.closest(".tile-cell"),overlay=cell&&cell.querySelector(".tile-bounds");
+      if(!overlay)return;
+      overlay.hidden=true;
+      Array.prototype.forEach.call(overlay.querySelectorAll(".bound-btn"),function(b){
+        b.classList.remove("is-active");b.setAttribute("aria-pressed","false");
+      });
+      t.setAttribute("aria-expanded","false");
+    }
+
     considerHost.addEventListener("click",function(e){
       var fn=e.target.closest(".fn-marker");
       if(fn){
@@ -1802,19 +2160,60 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
         if(fpanel)fpanel.hidden=open;
         return;
       }
+
+      // Additive: a bound button (Lower bound / Higher bound) inside an
+      // opened interval tile. Reuses detailHTML's existing single-value
+      // branch by handing it a plain {result, body} shape — the exact same
+      // shift-row + one delta pill that Acemoglu's own tiles already use,
+      // so picking a bound reads as the same kind of choice as picking one
+      // of Acemoglu's variants above it.
+      var boundBtn=e.target.closest(".bound-btn");
+      if(boundBtn){
+        var bCell=boundBtn.closest(".tile-cell"),bGrp=boundBtn.closest(".consider-group");
+        var bg=CONSIDERATIONS[bGrp.getAttribute("data-group")];
+        var bIt=tilesOf(bg)[parseInt(boundBtn.getAttribute("data-idx"),10)];
+        var which=boundBtn.getAttribute("data-bound")==="lo"?bIt.boundLo:bIt.boundHi;
+        Array.prototype.forEach.call(bCell.querySelectorAll(".bound-btn"),function(b){
+          var active=b===boundBtn;
+          b.classList.toggle("is-active",active);
+          b.setAttribute("aria-pressed",active?"true":"false");
+        });
+        var bDetail=bGrp.querySelector(".tile-detail");
+        bDetail.innerHTML=detailHTML(bg,{tag:bIt.tag,result:which.value,body:which.caption});
+        bDetail.classList.add("is-filled");
+        countUp(bDetail,bg.anchor.value);
+        return;
+      }
+
       var tile=e.target.closest(".tile");
       // the anchor tile is a plain, disabled div — nothing to select
       if(!tile||tile.classList.contains("is-static"))return;
       var grp=tile.closest(".consider-group"),g=CONSIDERATIONS[grp.getAttribute("data-group")];
       var detail=grp.querySelector(".tile-detail"),wasActive=tile.classList.contains("is-active");
+      var idx=parseInt(tile.getAttribute("data-idx"),10),it=tilesOf(g)[idx];
       // groups are independent — only this row's tiles are cleared
       Array.prototype.forEach.call(grp.querySelectorAll(".tile:not(.is-static)"),function(t){
         t.classList.remove("is-active");t.setAttribute("aria-pressed","false");
+        if(t!==tile)closeBoundsOverlay(t);
       });
-      if(wasActive){detail.innerHTML="";detail.classList.remove("is-filled");return;}
+      if(wasActive){
+        detail.innerHTML="";detail.classList.remove("is-filled");
+        closeBoundsOverlay(tile);
+        return;
+      }
       tile.classList.add("is-active");
       tile.setAttribute("aria-pressed","true");
-      detail.innerHTML=detailHTML(g,tilesOf(g)[parseInt(tile.getAttribute("data-idx"),10)]);
+      // Additive: a tile with two bounds opens its overlay instead of
+      // showing a detail directly — the detail only appears once a bound
+      // is actually picked (see the boundBtn branch above).
+      if(it.boundLo&&it.boundHi){
+        detail.innerHTML="";detail.classList.remove("is-filled");
+        var cell=tile.closest(".tile-cell"),overlay=cell.querySelector(".tile-bounds");
+        overlay.hidden=false;
+        tile.setAttribute("aria-expanded","true");
+        return;
+      }
+      detail.innerHTML=detailHTML(g,it);
       detail.classList.add("is-filled");
       countUp(detail,g.anchor.value);
     });
