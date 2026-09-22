@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TFP estimates for AI — AI, Productivity &amp; Work</title>
+<title>Forecasting the Impacts of AI on Productivity — AI, Productivity &amp; Work</title>
 <meta name="description" content="A hub for estimates of AI's effect on total factor productivity, anchored by an interactive comparison of Acemoglu (2024) and Aghion &amp; Bunel (2024).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,6 +62,7 @@ a{color:var(--blue)}
 .hero .inner{padding-top:clamp(38px,6vw,74px);padding-bottom:clamp(38px,6vw,74px)}
 .hero .theme{font-size:.86rem;font-weight:600;letter-spacing:.02em;opacity:.92;margin:0 0 14px}
 .hero h1{font-weight:800;font-size:clamp(1.9rem,5.2vw,3.4rem);line-height:.95;letter-spacing:-.025em;margin:0;max-width:28ch;text-transform:uppercase}
+.hero .subtitle{font-size:clamp(1rem,2vw,1.2rem);font-weight:500;line-height:1.4;letter-spacing:0;opacity:.92;margin:16px 0 0;max-width:46ch;text-transform:none}
 
 /* ---------- page furniture ---------- */
 .wrap{max-width:var(--shell);margin:0 auto;padding:clamp(28px,4.5vw,54px) clamp(16px,4vw,40px) 84px}
@@ -70,6 +71,7 @@ a{color:var(--blue)}
 .intro{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap}
 h2.headline{font-weight:800;font-size:clamp(1.9rem,4.4vw,2.9rem);line-height:1;letter-spacing:-.03em;margin:26px 0 20px;max-width:none}
 .standfirst{max-width:none;font-size:1.05rem;margin:0}
+.standfirst+.standfirst{margin-top:.9em}
 .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-text)}
 .block{background:var(--white);padding:clamp(20px,3vw,34px);margin-top:32px}
 .block h3.sec,.block summary.sec{font-weight:800;font-size:clamp(1.35rem,2.8vw,1.95rem);letter-spacing:-.025em;line-height:1.05;margin:.35em 0 .4em;color:var(--near-black)}
@@ -533,8 +535,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 
 <div class="hero">
   <div class="inner">
-    <p class="theme">Labor Market Consequences of Technological Change</p>
-    <h1>What inputs determine growth due to AI</h1>
+    <h1>Forecasting the Impacts of AI on Productivity</h1>
+    <p class="subtitle">How input assumptions shape predictions of economic growth from AI</p>
   </div>
 </div>
 
@@ -545,7 +547,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
   </div>
 
   <h2 class="headline">Acemoglu and Aghion &amp; Bunel use the same formula yet different assumptions lead to TFP estimates 10 times apart</h2>
-  <p class="standfirst">Acemoglu (2024) and Aghion &amp; Bunel (2024) use the same framework to calculate TFP, yet three inputs differ substantially.</p>
+  <p class="standfirst">We created this tool to let you be part of the discussion. Change the inputs according to what you think is most accurate and determine TFP growth within Acemoglu and Aghion &amp; Bunel’s task based model. As AI research advances, estimates may change. Therefore, this tool is built to be updated, and we invite you to share new studies with us.</p>
+  <p class="standfirst">We also present other models and estimates of TFP, Labor Productivity, and GDP Growth, demonstrating the vast array of opinions within this subject.</p>
 
   <section class="block">
     <p class="eyebrow">Published values</p>
@@ -747,8 +750,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
                 <td class="link-cell"><a class="slink" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4594466" target="_blank" rel="noopener noreferrer">Link →</a></td>
               </tr>
               <tr>
-                <td class="check-cell"><input type="checkbox" id="study-gambacorta"><label for="study-gambacorta" class="sr-only">Include Gambacorta et al. (2024) in the average</label></td>
-                <td><p class="sname">Gambacorta et al. (2024)</p><p class="sdomain">Software developers using CodeFuse, LLM for coding tasks.</p></td>
+                <td class="check-cell"><input type="checkbox" id="study-gambacorta"><label for="study-gambacorta" class="sr-only">Include Gambacorta et al. (2026) in the average</label></td>
+                <td><p class="sname">Gambacorta et al. (2026)</p><p class="sdomain">Software developers using CodeFuse, LLM for coding tasks.</p></td>
                 <td class="n"><span class="sval">22%</span><span class="smeasure">Task completion rate</span></td>
                 <td></td>
                 <td class="link-cell"><a class="slink" href="https://www.sciencedirect.com/science/article/abs/pii/S1572308926000458" target="_blank" rel="noopener noreferrer">Link →</a></td>
@@ -921,7 +924,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
               <li>Bontadini, Filippo, Carol Corrado, Jonathan Haskel, and Cecilia Jona-Lasinio. "AI as an Innovation in the Method of Innovation: Implications for Productivity Growth." AEA Papers and Proceedings 116 (2026): 36–40.</li>
               <li>Briggs, Joseph, and Devesh Kodnani. "The Potentially Large Effects of Artificial Intelligence on Economic Growth." Goldman Sachs Research, March 2023. https://www.gspublishing.com/content/research/en/reports/2023/03/27/d64e052b-0f6e-45d7-967b-d7be35fabd16.html.</li>
               <li>Brynjolfsson, Erik, Danielle Li, and Lindsey Raymond. "Generative AI at Work." April 2023. https://doi.org/10.3386/w31161.</li>
-              <li>Cui, Zheyuan, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobias Salz. "The Effects of Generative AI on High Skilled Work: Evidence from Three Field Experiments with Software Developers." 2024. https://doi.org/10.2139/ssrn.4945566.</li>
+              <li>Cui, Zheyuan, Mert Demirer, Sonia Jaffe, Leon Musolff, Sida Peng, and Tobias Salz. "The Effects of Generative AI on High Skilled Work: Evidence from Three Field Experiments with Software Developers." 2025. https://doi.org/10.2139/ssrn.4945566.</li>
               <li>Dell'Acqua, Fabrizio, Edward McFowland III, Ethan Mollick, Hila Lifshitz-Assaf, Katherine C. Kellogg, Saran Rajendran, Lisa Krayer, François Candelon, and Karim R. Lakhani. "Navigating the Jagged Technological Frontier: Field Experimental Evidence of the Effects of Artificial Intelligence on Knowledge Worker Productivity and Quality." Harvard Business School Working Paper No. 24-013, September 2023. Forthcoming in Organization Science.</li>
               <li>Ellingrud, Kweilin, Saurabh Sanghvi, Gurneet Singh Dandona, Anu Madgavkar, Michael Chui, Olivia White, and Paige Hasebe. "Generative AI and the Future of Work in America." McKinsey Global Institute, July 23, 2023. https://www.mckinsey.com/mgi/our-research/generative-ai-and-the-future-of-work-in-america.</li>
               <li>Filippucci, F., P. Gal, and M. Schief. "Miracle or Myth? Assessing the Macroeconomic Productivity Gains from Artificial Intelligence." OECD Artificial Intelligence Papers No. 29. Paris: OECD Publishing, 2024. https://doi.org/10.1787/b524a072-en.</li>
@@ -1218,8 +1221,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
      cite:"Scaling Laws for Economic Productivity: Experimental Evidence in LLM-Assisted Consulting, Data Analyst, and Management Tasks, Merali (2025).",
      link:"https://arxiv.org/pdf/2512.21316",
      body:"This paper researches scaling laws - defined as “empirical elasticities mapping the computational scale and algorithmic progress of Large Language Models (LLMs) to human professional productivity.” By measuring workers' task completion with different AI models, the author finds that newer models with more compute power improved worker productivity. This result demonstrates the importance of model scaling for productivity gains, potentially boosting US productivity up to 20% in the next decade."},
-    {id:"haskel",name:"Bontadini et al.",year:2024,
-     cite:"Haskel, Bontadini, Corrado &amp; Jona-Lasinio (2024), AI as an Innovation in the Method of Innovation.",
+    {id:"haskel",name:"Bontadini et al.",year:2026,month:5,
+     cite:"Haskel, Bontadini, Corrado &amp; Jona-Lasinio (2026), AI as an Innovation in the Method of Innovation.",
      link:"https://www.aeaweb.org/articles?id=10.1257/pandp.20261036",
      body:"By viewing AI as an innovation in the method of innovation and a GPT, the researchers use a two sector model and growth accounting framework to estimate AI's impact on productivity. Ultimately, they find that AI's development and use is contributing to one half of the productivity growth in the US."},
     {id:"baslandze",name:"Baslandze et al.",title:"Baslandze et al. (2026)",year:2026,month:4,
