@@ -571,7 +571,10 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 
 .tile-detail{max-width:70ch;min-height:0;opacity:0;transition:opacity .18s ease}
 .tile-detail.is-filled{margin-top:26px;padding-top:22px;min-height:7.5em;opacity:1}
-.shift-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin:10px 0 18px;padding-bottom:16px}
+.shift-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin:10px 0 0;padding-bottom:0}
+/* the caption sits tight under the figure it describes; with no caption the
+   old gap to the body copy is preserved */
+.shift-row+.tile-body{margin-top:34px}
 .shift-from,.shift-arrow{font-family:var(--mono);font-size:1.5rem;color:var(--gray-text)}
 .shift-to{font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums}
 .to-low,.to-high{font-size:1em;font-weight:600}
@@ -581,7 +584,8 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .shift-delta.is-up{background:#E7EDE2;color:var(--sage-dark)}
 .shift-delta.is-down{background:#F5E1E2;color:var(--maroon)}
 .shift-delta+.shift-delta{margin-left:-6px}
-.shift-caption{margin:0;max-width:65ch;font-size:.83rem;font-style:italic;line-height:1.55;color:var(--gray-text)}
+.shift-caption{margin:9px 0 0;max-width:58ch;font-size:.72rem;font-style:normal;font-weight:700;line-height:1.5;color:var(--gray-text)}
+.shift-caption em{font-style:normal}
 .tile-body{margin:14px 0 0;max-width:70ch;font-size:.93rem;line-height:1.6;color:var(--gray-text)}
 .shift-caption+.tile-body{margin-top:12px}
 
@@ -903,7 +907,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
           <li><b>0.53%</b> — hard-to-learn tasks. 72.6% of exposed tasks by wage bill are easy; cost savings on the rest assumed at 7% rather than 27%. The estimate he considers most reasonable.</li>
           <li><b>0.66%</b> — baseline. 4.6% of GDP impacted × 14.4% overall cost savings. He calls it an upper bound.</li>
           <li><b>0.89%</b> — including Peng et al. Labor cost savings rise from 27% to 36%.</li>
-          <li><b>0.90%</b> — rapid compute cost decline. Svanberg et al.'s 10%-a-year scenario lifts feasibly automated tasks to 30%.</li>
+          <li><b>0.90%</b> — rapid compute cost decline. Svanberg et al.'s (2024) 10%-a-year scenario lifts feasibly automated tasks to 30%.</li>
         </ul>
         <p class="notes-sub">Aghion &amp; Bunel's intervals</p>
         <ul class="check-list">
@@ -1957,7 +1961,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
         {value:"0.89%",result:0.89,tag:"Just including Peng et. al",
          body:"Includes Peng et al. (2023), whose larger observed productivity gains raise the average cost savings and therefore the TFP estimate."},
         {value:"0.90%",result:0.90,tag:"Just including Cost Decline Scenarios",
-         body:"This estimate uses Svanberg et al.'s cost decline scenario in which computer vision costs decline at a rate of 10% per year. The fraction of feasibly automated tasks can rise to 30%, raising the GDP share impacted by AI and the resulting raising TFP gains over the next 10 years."},
+         body:"This estimate uses Svanberg et al.'s (2024) cost decline scenario in which computer vision costs decline at a rate of 10% per year. The fraction of feasibly automated tasks can rise to 30%, raising the GDP share impacted by AI and the resulting raising TFP gains over the next 10 years."},
         {value:"0.53%",result:0.53,tag:"Considering Hard To Learn Tasks",
          body:"By recognizing the slower productivity gains from hard tasks exposed to AI, TFP growth drops."}
       ]
@@ -1976,7 +1980,7 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
       // row, so the panel is correct while incomplete rather than invented.
       items:[
         {value:"18.5–68%",lowResult:null,highResult:null,tag:"Share of GDP exposed",
-         body:"Lower bound comes from Gmyrek et. al (2023) who find 18.5% of tasks are exposed in advanced countries and Higher bound comes from Pizzinelli et al. (2023) who find 68% of exposed abilities in the UK.",
+         body:"Lower bound comes from Gmyrek et. al (2023) who find 18.5% of tasks are exposed in advanced countries and Higher bound comes from Pizzinelli et al. (2023) who find 68% of abilities are exposed in the UK.",
          // Additive: powers the two-bound interaction (see tileHTML/click
          // handler below). Each value is the cumulative-ten-year TFP result
          // of holding the OTHER three inputs at Aghion & Bunel's own central
@@ -1987,13 +1991,13 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
          boundLo:{label:"Lower bound",input:"18.5%",value:(18.5/100)*(50/100)*(40/100)*(57/100)*100,
            caption:"Lower bound comes from Gmyrek et. al (2023) who find 18.5% of tasks are exposed in advanced countries."},
          boundHi:{label:"Higher bound",input:"68%",value:(68/100)*(50/100)*(40/100)*(57/100)*100,
-           caption:"Higher bound comes from Pizzinelli et al. (2023) who find 68% of exposed abilities in the UK."}},
+           caption:"Higher bound comes from Pizzinelli et al. (2023) who find 68% of abilities are exposed in the UK."}},
         {value:"23–80%",lowResult:null,highResult:null,tag:"Share of exposed tasks profitable to automate",
-         body:"The lower bound comes from Svanberg et. al’s headline figure while the higher bound considers a 50% annual cost reduction scenario based on changing GPU computing power. A 50% cost reduction scenario via Svanberg et al.’s estimates results in 80% of tasks being profitable to automate within 10 years.",
+         body:"The lower bound comes from Svanberg et. al’s (2024) headline figure. The higher bound of this estimate considers a 50% annual cost reduction scenario based on changing GPU computing power. A 50% cost reduction scenario via Svanberg et al.’s (2024) estimates results in 80% of tasks being profitable to automate within 10 years.",
          boundLo:{label:"Lower bound",input:"23%",value:(60/100)*(23/100)*(40/100)*(57/100)*100,
-           caption:"The lower bound comes from Svanberg et. al’s headline figure while the higher bound considers a 50% annual cost reduction scenario based on changing GPU computing power."},
+           caption:"The lower bound comes from Svanberg et. al’s (2024) headline figure."},
          boundHi:{label:"Higher bound",input:"80%",value:(60/100)*(80/100)*(40/100)*(57/100)*100,
-           caption:"A 50% cost reduction scenario via Svanberg et al.’s estimates results in 80% of tasks being profitable to automate within 10 years."}},
+           caption:"The higher bound of this estimate considers a 50% annual cost reduction scenario based on changing GPU computing power. A 50% cost reduction scenario via Svanberg et al.’s (2024) estimates results in 80% of tasks being profitable to automate within 10 years."}},
         {value:"27–40%",lowResult:null,highResult:null,tag:"Average cost savings from AI",
          body:"Lower bound comes from Acemoglu’s average of Noy and Zhang (2023) and Brynjolfsson et al. (2023), while the upper bound includes Peng et al. (2023) and uses Brynjolfsson et al. (2023)’s productivity estimates for the second and third months.",
          boundLo:{label:"Lower bound",input:"27%",value:(60/100)*(50/100)*(27/100)*(57/100)*100,
