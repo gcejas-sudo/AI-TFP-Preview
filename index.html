@@ -392,6 +392,10 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
 .dfigs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
 .dfigs .fig{background:var(--white);border:1px solid var(--gray-line);padding:6px 11px;font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--navy)}
 .detail .dbody{margin:0;font-size:.9rem;line-height:1.55;color:var(--gray-text);max-width:70ch}
+/* when there's no headline pill (.dfigs, which already carries its own
+   margin) between the citation and the summary, the two sit flush against
+   each other — give the summary its own top gap in that case */
+.detail .dcite+.dbody{margin-top:14px}
 .detail .dbody+.dbody{margin-top:.8em}
 .detail .dlink{display:inline-block;margin-top:28px;font-weight:700;font-size:.85rem;color:var(--blue);text-decoration:none}
 .detail .dlink:hover{text-decoration:underline}
