@@ -198,9 +198,11 @@ footer.site .updated{margin-top:18px;font-size:.78rem;color:#B9C4DC}
 .tick:hover,.tick:focus-visible{text-decoration:underline}
 .tick.a{color:var(--navy);transform:translateX(-100%)}
 .tick.a::before{margin:0 0 2px auto}
-.tick.g{color:var(--sage-dark)}
-.tick.g.near{transform:translateX(0)}
-.tick.g.near::before{margin:0 auto 2px 0}
+/* Always anchored opposite Acemoglu — left of its own mark, so the two
+   labels open away from each other instead of both centering on their
+   marks, which crowds together whenever the two values sit close. */
+.tick.g{color:var(--sage-dark);transform:translateX(0)}
+.tick.g::before{margin:0 auto 2px 0}
 details.prov{margin-top:16px;border-top:1px solid var(--gray-line);padding-top:12px}
 details.prov summary{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);cursor:pointer;list-style:none;font-weight:500}
 details.prov summary::-webkit-details-marker{display:none}
