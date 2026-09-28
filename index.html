@@ -2289,8 +2289,13 @@ table.compare tbody tr:last-child td{border-bottom:none;background:var(--pale);f
         "Submitter email: "+(email||"—")+"\n\n"+
         "Notes:\n"+(notes||"—")
       );
-      if(statusEl)statusEl.textContent="Opening your mail client…";
-      window.location.href="mailto:"+CONTACT+"?subject="+subject+"&body="+body;
+      var mailtoHref="mailto:"+CONTACT+"?subject="+subject+"&body="+body;
+      // The redirect below only does anything visible if the browser has a
+      // default mail handler — with none configured it fails silently, so
+      // the address is always shown and clickable here too rather than
+      // depending on that redirect actually opening something.
+      if(statusEl)statusEl.innerHTML='Opening your mail client — if nothing happens, email us directly at <a href="'+mailtoHref+'">'+CONTACT+"</a>.";
+      window.location.href=mailtoHref;
       return;
     }
 
